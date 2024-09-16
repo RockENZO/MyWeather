@@ -7,6 +7,7 @@
 
 
 import SwiftUI
+import MapKit
 
 struct WeatherView: View {
     var weather: ResponseBody
@@ -15,6 +16,17 @@ struct WeatherView: View {
     @State var currentDragOffsetY: CGFloat = 0
     @State var endingOffsetY: CGFloat = 0
     @State var isCardUp: Bool = false // Track card position
+    
+    @State private var region: MKCoordinateRegion // State for the map's region
+    
+    init(weather: ResponseBody) {
+        self.weather = weather
+        // Set the region based on the weather coordinates
+        self._region = State(initialValue: MKCoordinateRegion(
+            center: CLLocationCoordinate2D(latitude: weather.coord.lat, longitude: weather.coord.lon),
+            span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1) // Adjust zoom level
+        ))
+    }
     
     // Define common font styles
     private let titleFont = Font.title.bold()
@@ -105,6 +117,7 @@ struct WeatherView: View {
                     HStack {
                         WeatherRow(logo: "location.north.line", name: "Wind Direction", value: "\(weather.wind.deg)" + "°")
                             .font(valueFont)
+                            .frame(width: 170, alignment: .leading) // Set a fixed width to prevent wrapping
                         Spacer()
                         WeatherRow(logo: "wind", name: "Wind speed", value: (weather.wind.speed.roundDouble() + " m/s"))
                             .font(valueFont)
@@ -117,7 +130,7 @@ struct WeatherView: View {
                 .padding(.bottom, 20)
                 .foregroundColor(Color(hue: 0.656, saturation: 0.787, brightness: 0.354))
                 .background(Color.white)
-                .cornerRadius(20, corners: [.topLeft, .topRight, .bottomLeft, .bottomRight])
+                .cornerRadius(40, corners: [.topLeft, .topRight, .bottomLeft, .bottomRight])
                 .offset(y: startingOffsetY + currentDragOffsetY + endingOffsetY)
                 .gesture(
                     DragGesture()
@@ -144,30 +157,42 @@ struct WeatherView: View {
             
             // Additional information shown when the card is dragged up
             if isCardUp {
-                VStack(alignment: .leading, spacing: 10) {
+                VStack(spacing: 10) {
+                    Spacer()
                     Text("For More Info")
                         .font(titleFont)
+                
+                    // Pressure Progress Bar
+                    ProgressView(value: (Double(weather.main.pressure) - 950) / 100) {
+                        Text("Pressure")
+                            .font(headingFont)
+                            .bold()
+                    }
+                    .progressViewStyle(LinearProgressViewStyle(tint: .blue))
+                        
+                
                     
-                    Text("Longitude: \(weather.coord.lon)")
-                        .font(titleFont)
+                    ProgressView(value: Double(weather.visibility) / 10000) {
+                            Text("Visibility")
+                            .font(headingFont)
+                        }
+                        .progressViewStyle(LinearProgressViewStyle(tint: .green))
+                        .padding([.top,.bottom], 10)
+                    // Add Map View based on the weather's coordinates
+                    Map(coordinateRegion: $region)
+                        .frame(width:373, height: 230)
+                        .cornerRadius(40)
+                    Spacer()
                     
-                    Text("Latitude: \(weather.coord.lat)")
-                        .font(titleFont)
-                    
-                    Text("Pressure: \(weather.main.pressure) hPa")
-                        .font(titleFont)
-                    
-                    Text("Visibility: \(weather.visibility / 1000) km")
-                        .font(titleFont)
                 }
-                .frame(maxWidth: .infinity,maxHeight: 280)
+                .frame(maxWidth: .infinity,maxHeight: 360)
                 .padding()
                 .foregroundColor(.blue)
                 .background(Color.white)
-                .cornerRadius(30)
+                .cornerRadius(40)
                 .shadow(radius: 10)
                 .offset(y: UIScreen.main.bounds.height * 0.40) // Position it up a notch to reveal fully
-                .padding(.bottom, 200) // Ensure full visibility
+                .padding(.bottom, 280) // Ensure full visibility
             }
         }
         .edgesIgnoringSafeArea(.bottom)
