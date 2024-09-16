@@ -11,7 +11,7 @@ MyWeather is a SwiftUI-based weather application that provides current weather i
 
 ## Requirements
 
-- iOS 15.0+
+- iOS 16.0+
 - Xcode 13.0+
 - Swift 5.5+
 
