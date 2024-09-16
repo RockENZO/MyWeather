@@ -11,10 +11,16 @@ import SwiftUI
 struct WeatherView: View {
     var weather: ResponseBody
     
-    // State variables to manage the drag offset
     @State var startingOffsetY: CGFloat = 0 // Start from the top
     @State var currentDragOffsetY: CGFloat = 0
     @State var endingOffsetY: CGFloat = 0
+    @State var isCardUp: Bool = false // Track card position
+    
+    // Define common font styles
+    private let titleFont = Font.title.bold()
+    private let headingFont = Font.headline.bold()
+    private let bodyFont = Font.body
+    private let valueFont = Font.body.bold()
     
     var body: some View {
         ZStack(alignment: .leading) {
@@ -22,10 +28,10 @@ struct WeatherView: View {
                 // Main weather information at the top
                 VStack(alignment: .leading, spacing: 5) {
                     Text(weather.name)
-                        .bold()
-                        .font(.title)
+                        .font(titleFont)
                     
                     Text("Today, \(Date().formatted(.dateTime.month().day().hour().minute()))")
+                        .font(bodyFont)
                         .fontWeight(.light)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -40,6 +46,7 @@ struct WeatherView: View {
                                 .bold()
                             
                             Text("\(weather.weather[0].main)")
+                                .font(bodyFont)
                                 .bold()
                         }
                         .frame(width: 100, alignment: .leading)
@@ -77,27 +84,33 @@ struct WeatherView: View {
                 
                 VStack(alignment: .leading, spacing: 20) {
                     Text("Weather now")
-                        .bold()
-                        .padding(.bottom)
+                        .font(titleFont)
+                        
                     
                     HStack {
                         WeatherRow(logo: "thermometer", name: "Min temp", value: (weather.main.tempMin.roundDouble() + "°"))
+                            .font(valueFont)
                         Spacer()
                         WeatherRow(logo: "thermometer", name: "Max temp", value: (weather.main.tempMax.roundDouble() + "°"))
+                            .font(valueFont)
                     }
                     
                     HStack {
-                        WeatherRow(logo: "wind", name: "Wind speed", value: (weather.wind.speed.roundDouble() + " m/s"))
+                        WeatherRow(logo: "cloud.fill", name: "Cloudiness", value: "\(weather.clouds.all)" + "%")
+                            .font(valueFont)
                         Spacer()
                         WeatherRow(logo: "humidity", name: "Humidity", value: "\(weather.main.humidity.roundDouble())%")
+                            .font(valueFont)
                     }
-                    HStack{
+                    HStack {
                         WeatherRow(logo: "location.north.line", name: "Wind Direction", value: "\(weather.wind.deg)" + "°")
+                            .font(valueFont)
                         Spacer()
-                        WeatherRow(logo: "cloud.fill", name: "Cloudiness", value: "\(weather.clouds.all)" + "%")
+                        WeatherRow(logo: "wind", name: "Wind speed", value: (weather.wind.speed.roundDouble() + " m/s"))
+                            .font(valueFont)
 
+                        
                     }
-                    
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding()
@@ -105,13 +118,14 @@ struct WeatherView: View {
                 .foregroundColor(Color(hue: 0.656, saturation: 0.787, brightness: 0.354))
                 .background(Color.white)
                 .cornerRadius(20, corners: [.topLeft, .topRight, .bottomLeft, .bottomRight])
-                // Apply the drag gesture
-                .offset(y: startingOffsetY + currentDragOffsetY + endingOffsetY) // Combine offsets
+                .offset(y: startingOffsetY + currentDragOffsetY + endingOffsetY)
                 .gesture(
                     DragGesture()
                         .onChanged { value in
                             withAnimation(.spring()) {
                                 currentDragOffsetY = value.translation.height
+                                // Check if the card is dragged up
+                                isCardUp = value.translation.height < -100
                             }
                         }
                         .onEnded { value in
@@ -122,9 +136,38 @@ struct WeatherView: View {
                                     endingOffsetY = 0 // Slide down to the starting position
                                 }
                                 currentDragOffsetY = 0 // Reset drag offset
+                                isCardUp = endingOffsetY == -UIScreen.main.bounds.height * 0.5
                             }
                         }
                 )
+            }
+            
+            // Additional information shown when the card is dragged up
+            if isCardUp {
+                VStack(alignment: .leading, spacing: 10) {
+                    Text("For More Info")
+                        .font(titleFont)
+                    
+                    Text("Longitude: \(weather.coord.lon)")
+                        .font(titleFont)
+                    
+                    Text("Latitude: \(weather.coord.lat)")
+                        .font(titleFont)
+                    
+                    Text("Pressure: \(weather.main.pressure) hPa")
+                        .font(titleFont)
+                    
+                    Text("Visibility: \(weather.visibility / 1000) km")
+                        .font(titleFont)
+                }
+                .frame(maxWidth: .infinity,maxHeight: 280)
+                .padding()
+                .foregroundColor(.blue)
+                .background(Color.white)
+                .cornerRadius(30)
+                .shadow(radius: 10)
+                .offset(y: UIScreen.main.bounds.height * 0.40) // Position it up a notch to reveal fully
+                .padding(.bottom, 200) // Ensure full visibility
             }
         }
         .edgesIgnoringSafeArea(.bottom)

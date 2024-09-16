@@ -32,7 +32,7 @@ struct WeatherRow: View {
             
             VStack(alignment: .leading, spacing: 8) {
                 Text(name)
-                    .font(.caption)
+                    .bold()
                 
                 Text(value)
                     .bold()
