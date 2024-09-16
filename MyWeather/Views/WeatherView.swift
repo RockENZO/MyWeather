@@ -11,9 +11,15 @@ import SwiftUI
 struct WeatherView: View {
     var weather: ResponseBody
     
+    // State variables to manage the drag offset
+    @State var startingOffsetY: CGFloat = 0 // Start from the top
+    @State var currentDragOffsetY: CGFloat = 0
+    @State var endingOffsetY: CGFloat = 0
+    
     var body: some View {
         ZStack(alignment: .leading) {
             VStack {
+                // Main weather information at the top
                 VStack(alignment: .leading, spacing: 5) {
                     Text(weather.name)
                         .bold()
@@ -47,7 +53,7 @@ struct WeatherView: View {
                     }
                     
                     Spacer()
-                        .frame(height:  100)
+                        .frame(height: 100)
                     
                     AsyncImage(url: URL(string: "https://cdn.pixabay.com/photo/2020/01/24/21/33/city-4791269_960_720.png")) { image in
                         image
@@ -65,15 +71,17 @@ struct WeatherView: View {
             .padding()
             .frame(maxWidth: .infinity, alignment: .leading)
             
+            // Bottom draggable card
             VStack {
                 Spacer()
+                
                 VStack(alignment: .leading, spacing: 20) {
                     Text("Weather now")
                         .bold()
                         .padding(.bottom)
                     
                     HStack {
-                        WeatherRow(logo: "thermometer", name: "Min temp", value: (weather.main.tempMin.roundDouble() + ("°")))
+                        WeatherRow(logo: "thermometer", name: "Min temp", value: (weather.main.tempMin.roundDouble() + "°"))
                         Spacer()
                         WeatherRow(logo: "thermometer", name: "Max temp", value: (weather.main.tempMax.roundDouble() + "°"))
                     }
@@ -88,8 +96,28 @@ struct WeatherView: View {
                 .padding()
                 .padding(.bottom, 20)
                 .foregroundColor(Color(hue: 0.656, saturation: 0.787, brightness: 0.354))
-                .background(.white)
+                .background(Color.white)
                 .cornerRadius(20, corners: [.topLeft, .topRight])
+                // Apply the drag gesture
+                .offset(y: startingOffsetY + currentDragOffsetY + endingOffsetY) // Combine offsets
+                .gesture(
+                    DragGesture()
+                        .onChanged { value in
+                            withAnimation(.spring()) {
+                                currentDragOffsetY = value.translation.height
+                            }
+                        }
+                        .onEnded { value in
+                            withAnimation(.spring()) {
+                                if currentDragOffsetY < -100 {
+                                    endingOffsetY = -UIScreen.main.bounds.height * 0.5 // Slide up to the top
+                                } else if endingOffsetY != 0 && currentDragOffsetY > 100 {
+                                    endingOffsetY = 0 // Slide down to the starting position
+                                }
+                                currentDragOffsetY = 0 // Reset drag offset
+                            }
+                        }
+                )
             }
         }
         .edgesIgnoringSafeArea(.bottom)
