@@ -30,22 +30,24 @@ struct WeatherView: View {
                     HStack {
                         VStack(spacing: 20) {
                             Image(systemName: "cloud")
-                                .font(.system(size: 40))
+                                .font(.system(size: 50))
+                                .bold()
                             
                             Text("\(weather.weather[0].main)")
+                                .bold()
                         }
-                        .frame(width: 150, alignment: .leading)
+                        .frame(width: 100, alignment: .leading)
                         
                         Spacer()
                         
                         Text(weather.main.feelsLike.roundDouble() + "°")
-                            .font(.system(size: 100))
+                            .font(.system(size: 80))
                             .fontWeight(.bold)
                             .padding()
                     }
                     
                     Spacer()
-                        .frame(height:  80)
+                        .frame(height:  100)
                     
                     AsyncImage(url: URL(string: "https://cdn.pixabay.com/photo/2020/01/24/21/33/city-4791269_960_720.png")) { image in
                         image
