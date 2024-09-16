@@ -169,15 +169,19 @@ struct WeatherView: View {
                             .bold()
                     }
                     .progressViewStyle(LinearProgressViewStyle(tint: .blue))
-                        
-                
-                    
+                    .frame(width: 350) // Shorten the progress bar
+                    .frame(maxWidth: .infinity) // Center horizontally
+
+                    // Visibility Progress Bar
                     ProgressView(value: Double(weather.visibility) / 10000) {
-                            Text("Visibility")
+                        Text("Visibility")
                             .font(headingFont)
-                        }
-                        .progressViewStyle(LinearProgressViewStyle(tint: .green))
-                        .padding([.top,.bottom], 10)
+                    }
+                    .progressViewStyle(LinearProgressViewStyle(tint: .green))
+                    .frame(width: 350) // Shorten the progress bar
+                    .frame(maxWidth: .infinity) // Center horizontally
+                    .padding([.top, .bottom], 10)
+                    
                     // Add Map View based on the weather's coordinates
                     Map(coordinateRegion: $region)
                         .frame(width:373, height: 230)
