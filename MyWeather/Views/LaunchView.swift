@@ -13,9 +13,6 @@ struct LaunchView: View {
     @State private var opacity = 0.5
 
     var body: some View {
-        if isActive {
-            ContentView()
-        } else {
             VStack {
                 Image(systemName: "cloud.sun.fill")
                     .font(.system(size: 80))
@@ -40,7 +37,7 @@ struct LaunchView: View {
                         self.isActive = true
                     }
                 }
-            }
+            
         }
     }
 }
