@@ -9,21 +9,30 @@ import SwiftUI
 
 struct LoadingView: View {
     @State private var isAnimating = false
-
+    
     var body: some View {
         ZStack {
-            Color.black.opacity(0.8)
+            Color.black.opacity(0.7)
                 .edgesIgnoringSafeArea(.all)
             
-            Circle()
-                .trim(from: 0, to: 0.7)
-                .stroke(Color.white, lineWidth: 8)
-                .frame(width: 100, height: 100)
-                .rotationEffect(Angle(degrees: isAnimating ? 360 : 0))
-                .animation(Animation.linear(duration: 1).repeatForever(autoreverses: false), value: isAnimating)
-                .onAppear {
-                    self.isAnimating = true
-                }
+            VStack {
+                Image(systemName: "cloud.sun.rain.fill") // SF Symbol for loading
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 100, height: 100)
+                    .foregroundColor(.blue)
+                    .scaleEffect(isAnimating ? 1.2 : 0.7)
+                    .animation(Animation.easeInOut(duration: 0.8).repeatForever(autoreverses: true), value: isAnimating)
+                
+                Text("Loading Weather Data...")
+                    .font(.title)
+                    .foregroundColor(.blue)
+                    .bold()
+                    .padding(.top, 20)
+            }
+            .onAppear {
+                self.isAnimating = true
+            }
         }
     }
 }
