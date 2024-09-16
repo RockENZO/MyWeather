@@ -97,7 +97,7 @@ struct WeatherView: View {
                 .padding(.bottom, 20)
                 .foregroundColor(Color(hue: 0.656, saturation: 0.787, brightness: 0.354))
                 .background(Color.white)
-                .cornerRadius(20, corners: [.topLeft, .topRight])
+                .cornerRadius(20, corners: [.topLeft, .topRight, .bottomLeft, .bottomRight])
                 // Apply the drag gesture
                 .offset(y: startingOffsetY + currentDragOffsetY + endingOffsetY) // Combine offsets
                 .gesture(
