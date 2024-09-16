@@ -8,36 +8,50 @@
 import SwiftUI
 
 struct ContentView: View {
-    // Replace YOUR_API_KEY in WeatherManager with your own API key for the app to work
     @StateObject var locationManager = LocationManager()
     var weatherManager = WeatherManager()
     @State var weather: ResponseBody?
-    
+    @State private var showLaunchView = true
+
     var body: some View {
-        VStack {
-            if let location = locationManager.location {
-                if let weather = weather {
-                    WeatherView(weather: weather)                } else {
-                    LoadingView()
-                        .task {
-                            do {
-                                weather = try await weatherManager.getCurrentWeather(latitude: location.latitude, longitude: location.longitude)
-                            } catch {
-                                print("Error getting weather: \(error)")
+        ZStack {
+            if showLaunchView {
+                LaunchView()
+                    .onAppear {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                            withAnimation {
+                                self.showLaunchView = false
                             }
                         }
-                }
+                    }
             } else {
-                if locationManager.isLoading {
-                    LoadingView()
-                } else {
-                    WelcomeView()
-                        .environmentObject(locationManager)
+                VStack {
+                    if let location = locationManager.location {
+                        if let weather = weather {
+                            WeatherView(weather: weather)
+                        } else {
+                            LoadingView()
+                                .task {
+                                    do {
+                                        weather = try await weatherManager.getCurrentWeather(latitude: location.latitude, longitude: location.longitude)
+                                    } catch {
+                                        print("Error getting weather: \(error)")
+                                    }
+                                }
+                        }
+                    } else {
+                        if locationManager.isLoading {
+                            LoadingView()
+                        } else {
+                            WelcomeView()
+                                .environmentObject(locationManager)
+                        }
+                    }
                 }
+                .background(Color(hue: 0.656, saturation: 0.787, brightness: 0.354))
+                .preferredColorScheme(.dark)
             }
         }
-        .background(Color(hue: 0.656, saturation: 0.787, brightness: 0.354))
-        .preferredColorScheme(.dark)
     }
 }
 

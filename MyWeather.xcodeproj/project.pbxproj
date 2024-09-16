@@ -23,6 +23,7 @@
 		8475D18C2C970D9D00292270 /* weatherData.json in Resources */ = {isa = PBXBuildFile; fileRef = 8475D18B2C970D9D00292270 /* weatherData.json */; };
 		8475D18E2C970FAA00292270 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8475D18D2C970FAA00292270 /* Extensions.swift */; };
 		8475D1912C97150D00292270 /* WeatherRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8475D1902C9714F900292270 /* WeatherRow.swift */; };
+		847811062C97B8A2009C4304 /* LaunchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847811052C97B8A2009C4304 /* LaunchView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -62,6 +63,7 @@
 		8475D18B2C970D9D00292270 /* weatherData.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = weatherData.json; sourceTree = "<group>"; };
 		8475D18D2C970FAA00292270 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		8475D1902C9714F900292270 /* WeatherRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherRow.swift; sourceTree = "<group>"; };
+		847811052C97B8A2009C4304 /* LaunchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -166,6 +168,7 @@
 				8475D17F2C96F90E00292270 /* WelcomeView.swift */,
 				8475D1812C97014C00292270 /* LoadingView.swift */,
 				8475D1872C970C2700292270 /* WeatherView.swift */,
+				847811052C97B8A2009C4304 /* LaunchView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -310,6 +313,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8475D1842C9703A300292270 /* WeatherManager.swift in Sources */,
+				847811062C97B8A2009C4304 /* LaunchView.swift in Sources */,
 				8475D18E2C970FAA00292270 /* Extensions.swift in Sources */,
 				8419AA022C95887100924135 /* ContentView.swift in Sources */,
 				8475D17D2C96F5E400292270 /* LocationManger.swift in Sources */,
