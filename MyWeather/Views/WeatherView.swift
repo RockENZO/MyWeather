@@ -53,7 +53,7 @@ struct WeatherView: View {
                     }
                     
                     Spacer()
-                        .frame(height: 100)
+                        .frame(height: 50)
                     
                     AsyncImage(url: URL(string: "https://cdn.pixabay.com/photo/2020/01/24/21/33/city-4791269_960_720.png")) { image in
                         image
@@ -91,6 +91,13 @@ struct WeatherView: View {
                         Spacer()
                         WeatherRow(logo: "humidity", name: "Humidity", value: "\(weather.main.humidity.roundDouble())%")
                     }
+                    HStack{
+                        WeatherRow(logo: "location.north.line", name: "Wind Direction", value: "\(weather.wind.deg)" + "°")
+                        Spacer()
+                        WeatherRow(logo: "cloud.fill", name: "Cloudiness", value: "\(weather.clouds.all)" + "%")
+
+                    }
+                    
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding()
