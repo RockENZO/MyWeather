@@ -73,7 +73,7 @@ struct WeatherView: View {
                     }
                     
                     Spacer()
-                        .frame(height: 20)
+                        .frame(height: 1)
                     
                     AsyncImage(url: URL(string: "https://cdn.pixabay.com/photo/2020/01/24/21/33/city-4791269_960_720.png")) { image in
                         image
@@ -126,7 +126,8 @@ struct WeatherView: View {
                         Spacer()
                         WeatherRow(logo: "wind", name: "Wind speed", value: (weather.wind.speed.roundDouble() + " m/s"))
                             .font(valueFont)
-//                            .foregroundColor(.white) // Ensure text is visible
+                            .frame(width: 170)
+                            .foregroundColor(.white) // Ensure text is visible
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
