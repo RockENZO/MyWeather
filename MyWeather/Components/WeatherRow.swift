@@ -17,18 +17,36 @@ struct WeatherRow: View {
     
     var body: some View {
         HStack(spacing: 20) {
-            Image(systemName: logo)
-                .font(.title2)
-                .frame(width: 20, height: 20)
-                .padding()
-                .background(Color(hue: 1.0, saturation: 0.0, brightness: 0.888))
-                .cornerRadius(50)
-                .opacity(isVisible ? 1 : 0)
-                .onAppear {
-                    withAnimation(.easeIn(duration: 1.0)) {
-                        self.isVisible = true
-                    }
-                }
+            ZStack {
+                // Circle Background
+                Circle()
+                    .fill(Color(hue: 0.656, saturation: 0.787, brightness: 1.04)) // Adjust color for contrast
+                    .frame(width: 60, height: 60) // Adjust size if needed
+                    .shadow(radius: 5) // Optional: add shadow to enhance visibility
+                
+                // Gradient Icon
+                Image(systemName: logo)
+                    .font(.title2)
+                    .frame(width: 30, height: 30)
+                    .padding(8) // Add padding if necessary
+                    .background(
+                        LinearGradient(
+                            gradient: Gradient(colors: [
+                                Color(hue: 0.656, saturation: 0.787, brightness: 0.654), // Light color
+                                Color(hue: 0.656, saturation: 0.787, brightness: 0.254)  // Dark color
+                            ]),
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                        .mask(
+                            Image(systemName: logo)
+                                .font(.title2)
+                                .frame(width: 30, height: 30)
+                        )
+                    )
+                    .clipShape(Circle()) // Ensure the icon maintains its circular shape
+                    .shadow(radius: 2) // Optional: add shadow to enhance visibility
+            }
             
             VStack(alignment: .leading, spacing: 8) {
                 Text(name)

@@ -12,23 +12,21 @@ import MapKit
 struct WeatherView: View {
     var weather: ResponseBody
     
-    @State var startingOffsetY: CGFloat = 0 // Start from the top
+    @State var startingOffsetY: CGFloat = 0
     @State var currentDragOffsetY: CGFloat = 0
     @State var endingOffsetY: CGFloat = 0
-    @State var isCardUp: Bool = false // Track card position
+    @State var isCardUp: Bool = false
     
-    @State private var region: MKCoordinateRegion // State for the map's region
+    @State private var region: MKCoordinateRegion
     
     init(weather: ResponseBody) {
         self.weather = weather
-        // Set the region based on the weather coordinates
         self._region = State(initialValue: MKCoordinateRegion(
             center: CLLocationCoordinate2D(latitude: weather.coord.lat, longitude: weather.coord.lon),
-            span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1) // Adjust zoom level
+            span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
         ))
     }
     
-    // Define common font styles
     private let titleFont = Font.title.bold()
     private let headingFont = Font.headline.bold()
     private let bodyFont = Font.body
@@ -37,14 +35,14 @@ struct WeatherView: View {
     var body: some View {
         ZStack(alignment: .leading) {
             VStack {
-                // Main weather information at the top
                 VStack(alignment: .leading, spacing: 5) {
                     Text(weather.name)
                         .font(titleFont)
-                    
+                        .foregroundColor(.white) // Ensure text is visible
                     Text("Today, \(Date().formatted(.dateTime.month().day().hour().minute()))")
                         .font(bodyFont)
                         .fontWeight(.light)
+                        .foregroundColor(.white) // Ensure text is visible
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 
@@ -56,10 +54,12 @@ struct WeatherView: View {
                             Image(systemName: "cloud")
                                 .font(.system(size: 50))
                                 .bold()
+                                .foregroundColor(.white) // Ensure icon is visible
                             
                             Text("\(weather.weather[0].main)")
                                 .font(bodyFont)
                                 .bold()
+                                .foregroundColor(.white) // Ensure text is visible
                         }
                         .frame(width: 100, alignment: .leading)
                         
@@ -69,10 +69,11 @@ struct WeatherView: View {
                             .font(.system(size: 80))
                             .fontWeight(.bold)
                             .padding()
+                            .foregroundColor(.white) // Ensure text is visible
                     }
                     
                     Spacer()
-                        .frame(height: 50)
+                        .frame(height: 20)
                     
                     AsyncImage(url: URL(string: "https://cdn.pixabay.com/photo/2020/01/24/21/33/city-4791269_960_720.png")) { image in
                         image
@@ -90,99 +91,105 @@ struct WeatherView: View {
             .padding()
             .frame(maxWidth: .infinity, alignment: .leading)
             
-            // Bottom draggable card
             VStack {
                 Spacer()
                 
                 VStack(alignment: .leading, spacing: 20) {
                     Text("Weather now")
                         .font(titleFont)
+                        .foregroundColor(.white) // Ensure text is visible
                         
-                    
                     HStack {
                         WeatherRow(logo: "thermometer", name: "Min temp", value: (weather.main.tempMin.roundDouble() + "°"))
                             .font(valueFont)
+                            .foregroundColor(.white) // Ensure text is visible
                         Spacer()
                         WeatherRow(logo: "thermometer", name: "Max temp", value: (weather.main.tempMax.roundDouble() + "°"))
                             .font(valueFont)
+                            .foregroundColor(.white) // Ensure text is visible
                     }
                     
                     HStack {
                         WeatherRow(logo: "cloud.fill", name: "Cloudiness", value: "\(weather.clouds.all)" + "%")
                             .font(valueFont)
+                            .foregroundColor(.white) // Ensure text is visible
                         Spacer()
                         WeatherRow(logo: "humidity", name: "Humidity", value: "\(weather.main.humidity.roundDouble())%")
                             .font(valueFont)
+                            .foregroundColor(.white) // Ensure text is visible
                     }
                     HStack {
                         WeatherRow(logo: "location.north.line", name: "Wind Direction", value: "\(weather.wind.deg)" + "°")
                             .font(valueFont)
-                            .frame(width: 170, alignment: .leading) // Set a fixed width to prevent wrapping
+                            .frame(width: 170, alignment: .leading)
+                            .foregroundColor(.white) // Ensure text is visible
                         Spacer()
                         WeatherRow(logo: "wind", name: "Wind speed", value: (weather.wind.speed.roundDouble() + " m/s"))
                             .font(valueFont)
-
-                        
+//                            .foregroundColor(.white) // Ensure text is visible
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding()
                 .padding(.bottom, 20)
-                .foregroundColor(Color(hue: 0.656, saturation: 0.787, brightness: 0.354))
-                .background(Color.white)
-                .cornerRadius(40, corners: [.topLeft, .topRight, .bottomLeft, .bottomRight])
+                .background(
+                    LinearGradient(
+                        gradient: Gradient(colors: [.blue, .purple]),
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
+                .cornerRadius(40)
                 .offset(y: startingOffsetY + currentDragOffsetY + endingOffsetY)
                 .gesture(
                     DragGesture()
                         .onChanged { value in
                             withAnimation(.spring()) {
                                 currentDragOffsetY = value.translation.height
-                                // Check if the card is dragged up
                                 isCardUp = value.translation.height < -100
                             }
                         }
                         .onEnded { value in
                             withAnimation(.spring()) {
                                 if currentDragOffsetY < -100 {
-                                    endingOffsetY = -UIScreen.main.bounds.height * 0.5 // Slide up to the top
+                                    endingOffsetY = -UIScreen.main.bounds.height * 0.5
                                 } else if endingOffsetY != 0 && currentDragOffsetY > 100 {
-                                    endingOffsetY = 0 // Slide down to the starting position
+                                    endingOffsetY = 0
                                 }
-                                currentDragOffsetY = 0 // Reset drag offset
+                                currentDragOffsetY = 0
                                 isCardUp = endingOffsetY == -UIScreen.main.bounds.height * 0.5
                             }
                         }
                 )
             }
             
-            // Additional information shown when the card is dragged up
             if isCardUp {
                 VStack(spacing: 10) {
                     Spacer()
                     Text("For More Info")
                         .font(titleFont)
-                
-                    // Pressure Progress Bar
+                        .foregroundColor(.white) // Ensure text is visible
+                    
                     ProgressView(value: (Double(weather.main.pressure) - 950) / 100) {
                         Text("Pressure")
                             .font(headingFont)
                             .bold()
+                            .foregroundColor(.white) // Ensure text is visible
                     }
-                    .progressViewStyle(LinearProgressViewStyle(tint: .blue))
-                    .frame(width: 350) // Shorten the progress bar
-                    .frame(maxWidth: .infinity) // Center horizontally
-
-                    // Visibility Progress Bar
+                    .progressViewStyle(LinearProgressViewStyle(tint: .white))
+                    .frame(width: 350)
+                    .frame(maxWidth: .infinity)
+                    
                     ProgressView(value: Double(weather.visibility) / 10000) {
                         Text("Visibility")
                             .font(headingFont)
+                            .foregroundColor(.white) // Ensure text is visible
                     }
-                    .progressViewStyle(LinearProgressViewStyle(tint: .green))
-                    .frame(width: 350) // Shorten the progress bar
-                    .frame(maxWidth: .infinity) // Center horizontally
+                    .progressViewStyle(LinearProgressViewStyle(tint: .white))
+                    .frame(width: 350)
+                    .frame(maxWidth: .infinity)
                     .padding([.top, .bottom], 10)
                     
-                    // Add Map View based on the weather's coordinates
                     Map(coordinateRegion: $region)
                         .frame(width:373, height: 230)
                         .cornerRadius(40)
@@ -191,16 +198,31 @@ struct WeatherView: View {
                 }
                 .frame(maxWidth: .infinity,maxHeight: 360)
                 .padding()
-                .foregroundColor(.blue)
-                .background(Color.white)
+                .foregroundColor(.white)
+                .background(
+                    LinearGradient(
+                        gradient: Gradient(colors: [.orange, .pink]),
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
                 .cornerRadius(40)
                 .shadow(radius: 10)
-                .offset(y: UIScreen.main.bounds.height * 0.40) // Position it up a notch to reveal fully
-                .padding(.bottom, 280) // Ensure full visibility
+                .offset(y: UIScreen.main.bounds.height * 0.40)
+                .padding(.bottom, 280)
             }
         }
         .edgesIgnoringSafeArea(.bottom)
-        .background(Color(hue: 0.656, saturation: 0.787, brightness: 0.354))
+        .background(
+            LinearGradient(
+                gradient: Gradient(colors: [
+                    Color(hue: 0.656, saturation: 0.787, brightness: 0.954), // Lightened shade
+                    Color(hue: 0.656, saturation: 0.787, brightness: 0.054)  // Darkened shade
+                ]),
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+        )
         .preferredColorScheme(.dark)
     }
 }
