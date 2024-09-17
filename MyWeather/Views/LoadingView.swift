@@ -15,7 +15,14 @@ struct LoadingView: View {
 
     var body: some View {
         ZStack {
-            LinearGradient(gradient: Gradient(colors: gradientColors), startPoint: .topLeading, endPoint: .bottomTrailing)
+            LinearGradient(
+                gradient: Gradient(colors: [
+                    Color(hue: 0.656, saturation: 0.787, brightness: 0.954), // Lightened shade
+                    Color(hue: 0.656, saturation: 0.787, brightness: 0.054)  // Darkened shade
+                ]),
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
                 .edgesIgnoringSafeArea(.all)
                 .animation(
                     Animation.linear(duration: 6).repeatForever(autoreverses: true),

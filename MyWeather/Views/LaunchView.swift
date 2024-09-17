@@ -64,6 +64,17 @@ struct LaunchView: View {
                 .opacity(opacity)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        // Applying gradient background
+        .background(
+            LinearGradient(
+                gradient: Gradient(colors: [
+                    Color(hue: 0.656, saturation: 0.787, brightness: 0.954), // Lightened shade
+                    Color(hue: 0.656, saturation: 0.787, brightness: 0.054)  // Darkened shade
+                ]),
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+        )
     }
 }
 
