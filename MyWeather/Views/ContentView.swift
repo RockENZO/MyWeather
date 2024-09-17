@@ -12,14 +12,16 @@ struct ContentView: View {
     var weatherManager = WeatherManager()
     @State var weather: ResponseBody?
     @State private var showLaunchView = true
+    @State private var showWeatherView = false
 
     var body: some View {
         ZStack {
             if showLaunchView {
                 LaunchView()
+                    .transition(.opacity) // Smooth fade-in/fade-out transition
                     .onAppear {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                            withAnimation {
+                        withAnimation(.easeInOut(duration: 1.0)) {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
                                 self.showLaunchView = false
                             }
                         }
@@ -27,13 +29,23 @@ struct ContentView: View {
             } else {
                 VStack {
                     if let location = locationManager.location {
-                        if let weather = weather {
-                            WeatherView(weather: weather)
+                        if showWeatherView {
+                            if let weather = weather {
+                                WeatherView(weather: weather)
+                                    .transition(.opacity) // Fade-in for WeatherView
+                            } else {
+                                Text("Unable to load weather data.")
+                                    .transition(.opacity) // Fade-in for error message
+                            }
                         } else {
                             LoadingView()
+                                .transition(.opacity) // Fade-in for LoadingView
                                 .task {
                                     do {
                                         weather = try await weatherManager.getCurrentWeather(latitude: location.latitude, longitude: location.longitude)
+                                        withAnimation(.easeInOut) {
+                                            showWeatherView = true
+                                        }
                                     } catch {
                                         print("Error getting weather: \(error)")
                                     }
@@ -42,9 +54,11 @@ struct ContentView: View {
                     } else {
                         if locationManager.isLoading {
                             LoadingView()
+                                .transition(.opacity) // Fade-in for LoadingView
                         } else {
                             WelcomeView()
                                 .environmentObject(locationManager)
+                                .transition(.opacity) // Fade-in for WelcomeView
                         }
                     }
                 }
@@ -52,6 +66,7 @@ struct ContentView: View {
                 .preferredColorScheme(.dark)
             }
         }
+        .animation(.easeInOut, value: showLaunchView) // Smooth transition for state changes
     }
 }
 
