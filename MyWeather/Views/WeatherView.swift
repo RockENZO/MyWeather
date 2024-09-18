@@ -119,7 +119,7 @@ struct WeatherView: View {
                             .foregroundColor(.white) // Ensure text is visible
                     }
                     HStack {
-                        WeatherRow(logo: "location.north.line", name: "Wind Direction", value: "\(weather.wind.deg)" + "°")
+                        WeatherRow(logo: "location.north.line", name: "Wind Direction", value: "\(Int(weather.wind.deg))°")
                             .font(valueFont)
 //                            .frame(width: 170, alignment: .leading)
                             .foregroundColor(.white) // Ensure text is visible
