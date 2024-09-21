@@ -11,6 +11,7 @@ import MapKit
 
 struct WeatherView: View {
     var weather: ResponseBody
+    var forecast: ForecastResponse
     
     @State var startingOffsetY: CGFloat = 0
     @State var currentDragOffsetY: CGFloat = 0
@@ -19,8 +20,9 @@ struct WeatherView: View {
     
     @State private var region: MKCoordinateRegion
     
-    init(weather: ResponseBody) {
+    init(weather: ResponseBody, forecast: ForecastResponse) {
         self.weather = weather
+        self.forecast = forecast
         self._region = State(initialValue: MKCoordinateRegion(
             center: CLLocationCoordinate2D(latitude: weather.coord.lat, longitude: weather.coord.lon),
             span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
@@ -59,7 +61,7 @@ struct WeatherView: View {
                             Text("\(weather.weather[0].main)")
                                 .font(bodyFont)
                                 .bold()
-                                .foregroundColor(.white) // Ensure text is visible
+
                         }
                         .frame(width: 100, alignment: .leading)
                         
@@ -75,13 +77,16 @@ struct WeatherView: View {
                     Spacer()
                         .frame(height: 1)
                     
-                    AsyncImage(url: URL(string: "https://cdn.pixabay.com/photo/2020/01/24/21/33/city-4791269_960_720.png")) { image in
-                        image
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 350)
-                    } placeholder: {
-                        ProgressView()
+                    // Display forecast data
+                    VStack {
+                        ForEach(forecast.list.prefix(5), id: \.dt) { forecast in
+                            HStack {
+                                Text("\(Date(timeIntervalSince1970: TimeInterval(forecast.dt)).formatted(.dateTime.hour().minute()))")
+                                Text("\(forecast.main.temp.roundDouble())°C")
+                                Text(forecast.weather.first?.description ?? "")
+                            }
+                            .foregroundColor(.white)
+                        }
                     }
                     
                     Spacer()
@@ -230,6 +235,6 @@ struct WeatherView: View {
 
 struct WeatherView_Previews: PreviewProvider {
     static var previews: some View {
-        WeatherView(weather: previewWeather)
+        WeatherView(weather: previewWeather, forecast: previewForecast)
     }
 }

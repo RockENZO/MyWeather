@@ -24,6 +24,7 @@
 		8475D18E2C970FAA00292270 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8475D18D2C970FAA00292270 /* Extensions.swift */; };
 		8475D1912C97150D00292270 /* WeatherRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8475D1902C9714F900292270 /* WeatherRow.swift */; };
 		847811062C97B8A2009C4304 /* LaunchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847811052C97B8A2009C4304 /* LaunchView.swift */; };
+		84F35AA72C9EE76C00F15A38 /* forcastData.json in Resources */ = {isa = PBXBuildFile; fileRef = 84F35AA62C9EE76200F15A38 /* forcastData.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -64,6 +65,7 @@
 		8475D18D2C970FAA00292270 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		8475D1902C9714F900292270 /* WeatherRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherRow.swift; sourceTree = "<group>"; };
 		847811052C97B8A2009C4304 /* LaunchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchView.swift; sourceTree = "<group>"; };
+		84F35AA62C9EE76200F15A38 /* forcastData.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = forcastData.json; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -128,6 +130,7 @@
 		8419AA052C95887200924135 /* Preview Content */ = {
 			isa = PBXGroup;
 			children = (
+				84F35AA62C9EE76200F15A38 /* forcastData.json */,
 				8419AA062C95887200924135 /* Preview Assets.xcassets */,
 				8475D1892C970CBE00292270 /* ModelData.swift */,
 				8475D18B2C970D9D00292270 /* weatherData.json */,
@@ -285,6 +288,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				84F35AA72C9EE76C00F15A38 /* forcastData.json in Resources */,
 				8419AA072C95887200924135 /* Preview Assets.xcassets in Resources */,
 				8475D18C2C970D9D00292270 /* weatherData.json in Resources */,
 				8419AA042C95887200924135 /* Assets.xcassets in Resources */,

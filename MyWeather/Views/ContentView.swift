@@ -11,6 +11,7 @@ struct ContentView: View {
     @StateObject var locationManager = LocationManager()
     var weatherManager = WeatherManager()
     @State var weather: ResponseBody?
+    @State var forecast: ForecastResponse?
     @State private var showLaunchView = true
     @State private var showWeatherView = false
 
@@ -30,8 +31,8 @@ struct ContentView: View {
                 VStack {
                     if let location = locationManager.location {
                         if showWeatherView {
-                            if let weather = weather {
-                                WeatherView(weather: weather)
+                            if let weather = weather, let forecast = forecast {
+                                WeatherView(weather: weather, forecast: forecast)
                                     .transition(.opacity) // Fade-in for WeatherView
                             } else {
                                 Text("Unable to load weather data.")
@@ -43,6 +44,7 @@ struct ContentView: View {
                                 .task {
                                     do {
                                         weather = try await weatherManager.getCurrentWeather(latitude: location.latitude, longitude: location.longitude)
+                                        forecast = try await weatherManager.getWeatherForecast(latitude: location.latitude, longitude: location.longitude)
                                         withAnimation(.easeInOut) {
                                             showWeatherView = true
                                         }
