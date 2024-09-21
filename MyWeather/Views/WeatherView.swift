@@ -77,17 +77,23 @@ struct WeatherView: View {
                     Spacer()
                         .frame(height: 1)
                     
-                    // Display forecast data
+                    // Replace forecast data display with LineGraph
                     VStack {
-                        ForEach(forecast.list.prefix(5), id: \.dt) { forecast in
-                            HStack {
-                                Text("\(Date(timeIntervalSince1970: TimeInterval(forecast.dt)).formatted(.dateTime.hour().minute()))")
-                                Text("\(forecast.main.temp.roundDouble())°C")
-                                Text(forecast.weather.first?.description ?? "")
-                            }
-                            .foregroundColor(.white)
-                        }
-                    }
+                        LineGraph(dataPoints: forecast.list.map { (time: $0.dt_txt, temp: $0.main.temp) })
+                            .frame(height: 150) // Set the height of the graph
+                            .padding(.bottom)
+                            .background(
+                                LinearGradient(
+                                    gradient: Gradient(colors: [.blue, .purple]),
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                )
+                            )
+                            .cornerRadius(20)
+                            .padding()
+                            .background(Color.clear)
+                            .zIndex(-1)
+                    } // Ensure the graph is behind other content
                     
                     Spacer()
                 }

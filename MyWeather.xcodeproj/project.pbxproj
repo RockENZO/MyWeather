@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8416457B2C9EFD4D0035891A /* LineGraph.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8416457A2C9EFD4D0035891A /* LineGraph.swift */; };
 		8419AA002C95887100924135 /* MyWeatherApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8419A9FF2C95887100924135 /* MyWeatherApp.swift */; };
 		8419AA022C95887100924135 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8419AA012C95887100924135 /* ContentView.swift */; };
 		8419AA042C95887200924135 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8419AA032C95887200924135 /* Assets.xcassets */; };
@@ -45,6 +46,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		8416457A2C9EFD4D0035891A /* LineGraph.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LineGraph.swift; sourceTree = "<group>"; };
 		8419A9FC2C95887100924135 /* MyWeather.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyWeather.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8419A9FF2C95887100924135 /* MyWeatherApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyWeatherApp.swift; sourceTree = "<group>"; };
 		8419AA012C95887100924135 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -167,6 +169,7 @@
 		8475D17E2C96F86700292270 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				8416457A2C9EFD4D0035891A /* LineGraph.swift */,
 				8419AA012C95887100924135 /* ContentView.swift */,
 				8475D17F2C96F90E00292270 /* WelcomeView.swift */,
 				8475D1812C97014C00292270 /* LoadingView.swift */,
@@ -320,6 +323,7 @@
 				847811062C97B8A2009C4304 /* LaunchView.swift in Sources */,
 				8475D18E2C970FAA00292270 /* Extensions.swift in Sources */,
 				8419AA022C95887100924135 /* ContentView.swift in Sources */,
+				8416457B2C9EFD4D0035891A /* LineGraph.swift in Sources */,
 				8475D17D2C96F5E400292270 /* LocationManger.swift in Sources */,
 				8419AA002C95887100924135 /* MyWeatherApp.swift in Sources */,
 				8475D1912C97150D00292270 /* WeatherRow.swift in Sources */,
