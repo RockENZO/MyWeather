@@ -17,15 +17,8 @@ MyWeather is a SwiftUI-based weather application that provides current weather i
 
 ## Installation
 
-1. Clone the repository:
-    ```sh
-    git clone https://github.com/yourusername/MyWeather.git
-    ```
-2. Open the project in Xcode:
-    ```sh
-    cd MyWeather
-    open MyWeather.xcodeproj
-    ```
+1. Clone the repository
+2. Open the project in Xcode
 3. Build and run the project on your simulator or device.
 
 ## Usage
