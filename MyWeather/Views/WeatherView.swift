@@ -80,7 +80,7 @@ struct WeatherView: View {
                     // Replace forecast data display with LineGraph
                     VStack {
                         LineGraph(dataPoints: forecast.list.map { (time: $0.dt_txt, temp: $0.main.temp) })
-                            .frame(height: 150) // Set the height of the graph
+                            .frame(height: 200) // Set the height of the graph
                             .padding(.bottom)
                             .background(
                                 LinearGradient(
@@ -88,6 +88,7 @@ struct WeatherView: View {
                                     startPoint: .topLeading,
                                     endPoint: .bottomTrailing
                                 )
+                                .opacity(0.68)
                             )
                             .cornerRadius(20)
                             .padding()

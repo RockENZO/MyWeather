@@ -5,6 +5,7 @@
 //  Created by Rock on 9/21/2024.
 //
 
+
 import SwiftUI
 
 struct LineGraph: View {
@@ -31,33 +32,45 @@ struct LineGraph: View {
                             Path { path in
                                 for (index, point) in dataPoints.enumerated() {
                                     let xPosition = width * CGFloat(index) / CGFloat(dataPoints.count - 1)
-                                    let yPosition = height * (1 - CGFloat((point.temp - minTemp) / tempRange))
+                                    let normalizedTemp = (point.temp - minTemp) / tempRange
+                                    let yPosition = height * (1 - CGFloat(normalizedTemp))
                                     
                                     if index == 0 {
                                         path.move(to: CGPoint(x: xPosition, y: yPosition))
                                     } else {
-                                        path.addLine(to: CGPoint(x: xPosition, y: yPosition))
+                                        let previousPoint = dataPoints[index - 1]
+                                        let previousXPosition = width * CGFloat(index - 1) / CGFloat(dataPoints.count - 1)
+                                        let previousNormalizedTemp = (previousPoint.temp - minTemp) / tempRange
+                                        let previousYPosition = height * (1 - CGFloat(previousNormalizedTemp))
+                                        
+                                        let controlPoint1 = CGPoint(x: (previousXPosition + xPosition) / 2, y: previousYPosition)
+                                        let controlPoint2 = CGPoint(x: (previousXPosition + xPosition) / 2, y: yPosition)
+                                        
+                                        path.addCurve(to: CGPoint(x: xPosition, y: yPosition), control1: controlPoint1, control2: controlPoint2)
                                     }
                                 }
                             }
                             .stroke(Color.blue, lineWidth: 2)
                             
-                            ForEach(0..<dataPoints.count, id: \.self) { index in
+                            ForEach(Array(dataPoints.enumerated()), id: \.offset) { index, point in
                                 let xPosition = width * CGFloat(index) / CGFloat(dataPoints.count - 1)
-                                let yPosition = height * (1 - CGFloat((dataPoints[index].temp - minTemp) / tempRange))
+                                let normalizedTemp = (point.temp - minTemp) / tempRange
+                                let yPosition = height * (1 - CGFloat(normalizedTemp))
                                 
                                 VStack {
                                     Circle()
-                                        .fill(Color.red)
+                                        .fill(Color.orange) // Changed to orange
                                         .frame(width: 8, height: 8)
                                         .position(x: xPosition, y: yPosition)
                                     
-                                    Text("\(dataPoints[index].temp.roundDouble())°")
-                                        .font(.caption)
-                                        .foregroundColor(.white)
-                                        .position(x: xPosition, y: yPosition - 20)
+                                    if index % 5 == 0 {
+                                        Text("\(point.temp.roundDouble())°")
+                                            .font(.caption)
+                                            .foregroundColor(.white)
+                                            .position(x: xPosition, y: yPosition - 20)
+                                    }
                                     
-                                    Text(dataPoints[index].time)
+                                    Text(point.time)
                                         .font(.caption)
                                         .foregroundColor(.white)
                                         .position(x: xPosition, y: height - 10)
@@ -68,7 +81,7 @@ struct LineGraph: View {
                     }
                 }
             }
-            .frame(height: 100) // Set the height of the graph
+            .frame(height: 150) // Set the height of the graph
             .cornerRadius(20)
         }
     }
