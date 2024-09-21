@@ -46,6 +46,9 @@ MyWeather is a SwiftUI-based weather application that provides current weather i
 ### WeatherManager
 `WeatherManager` fetches weather data from the OpenWeatherMap API based on the user's location.
 
+### LineGraph
+`LineGraph` displays the hourly forecast using a line graph.
+
 ### License
 This project is licensed under the MIT License. See the LICENSE file for details.
 
