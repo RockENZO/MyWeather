@@ -2,12 +2,8 @@
 
 MyWeather is a SwiftUI-based weather application that provides current weather information based on the user's location. The app features a launching animation and a loading view with advanced animations.
 
-## Features
-
-- Launching animation with a smooth transition to the main content
-- Fetches current weather data based on the user's location
-- Displays temperature, wind speed, and humidity
-- Advanced loading animations
+## Demo
+![MyWeather App Demo](SimulatorScreenRecording.gif)
 
 ## Requirements
 
