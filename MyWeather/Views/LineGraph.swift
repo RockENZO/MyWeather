@@ -7,6 +7,13 @@
 
 
 
+//
+//  LineGraph.swift
+//  MyWeather
+//
+//  Created by Rock on 9/21/2024.
+//
+
 import SwiftUI
 
 struct LineGraph: View {
@@ -66,9 +73,10 @@ struct LineGraph: View {
                                     
                                     if index % 5 == 0 {
                                         Text("\(point.temp.roundDouble())°")
-                                            .font(.caption)
+                                            .font(.system(size: 16))
+                                            .bold()
                                             .foregroundColor(.white)
-                                            .position(x: xPosition, y: yPosition - 40)
+                                            .position(x: xPosition, y: yPosition - 39)
                                     }
                                     
                                     Text(point.time)
