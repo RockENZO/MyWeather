@@ -82,7 +82,7 @@ struct WeatherView: View {
                             .foregroundColor(.white) // Ensure text is visible
                             .onAppear {
                                 let targetTemperature = Int(weather.main.feelsLike)
-                                Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true) { timer in
+                                Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { timer in
                                     if animatedTemperature < targetTemperature {
                                         animatedTemperature += 1
                                     } else {
