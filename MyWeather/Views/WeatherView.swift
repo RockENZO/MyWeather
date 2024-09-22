@@ -35,6 +35,13 @@ struct WeatherView: View {
     private let bodyFont = Font.body
     private let valueFont = Font.body.bold()
     
+    private var isDaytime: Bool {
+        let currentTime = Date()
+        let sunriseTime = Date(timeIntervalSince1970: weather.sys.sunrise)
+        let sunsetTime = Date(timeIntervalSince1970: weather.sys.sunset)
+        return currentTime >= sunriseTime && currentTime < sunsetTime
+    }
+    
     var body: some View {
         ZStack(alignment: .leading) {
             VStack {
@@ -54,7 +61,7 @@ struct WeatherView: View {
                 VStack {
                     HStack {
                         VStack(spacing: 20) {
-                            Image(systemName: "cloud")
+                            Image(systemName: isDaytime ? "cloud.sun" : "cloud.moon")
                                 .font(.system(size: 50))
                                 .bold()
                                 .foregroundColor(.white) // Ensure icon is visible
