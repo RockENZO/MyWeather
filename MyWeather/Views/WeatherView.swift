@@ -19,7 +19,8 @@ struct WeatherView: View {
     @State var isCardUp: Bool = false
     
     @State private var region: MKCoordinateRegion
-    
+    @State private var animatedTemperature: Int = 0
+
     init(weather: ResponseBody, forecast: ForecastResponse) {
         self.weather = weather
         self.forecast = forecast
@@ -67,11 +68,21 @@ struct WeatherView: View {
                         
                         Spacer()
                         
-                        Text(weather.main.feelsLike.roundDouble() + "°")
+                        Text("\(animatedTemperature)°") // Use animated temperature
                             .font(.system(size: 80))
                             .fontWeight(.bold)
                             .padding()
                             .foregroundColor(.white) // Ensure text is visible
+                            .onAppear {
+                                let targetTemperature = Int(weather.main.feelsLike)
+                                Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true) { timer in
+                                    if animatedTemperature < targetTemperature {
+                                        animatedTemperature += 1
+                                    } else {
+                                        timer.invalidate()
+                                    }
+                                }
+                            }
                     }
                     
                     Spacer()
