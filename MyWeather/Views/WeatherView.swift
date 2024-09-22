@@ -81,17 +81,15 @@ struct WeatherView: View {
                     VStack {
                         LineGraph(dataPoints: forecast.list.map { (time: $0.dt_txt, temp: $0.main.temp) })
                             .frame(height: 200) // Set the height of the graph
-                            .padding(.bottom)
                             .background(
                                 LinearGradient(
                                     gradient: Gradient(colors: [.blue, .purple]),
                                     startPoint: .topLeading,
                                     endPoint: .bottomTrailing
                                 )
-                                .opacity(0.68)
+                                .opacity(0.8)
                             )
                             .cornerRadius(20)
-                            .padding()
                             .background(Color.clear)
                             .zIndex(-1)
                     } // Ensure the graph is behind other content
@@ -133,7 +131,6 @@ struct WeatherView: View {
                     HStack {
                         WeatherRow(logo: "location.north.line", name: "Wind Direction", value: "\(Int(weather.wind.deg))°")
                             .font(valueFont)
-//                            .frame(width: 170, alignment: .leading)
                             .foregroundColor(.white) // Ensure text is visible
                         Spacer()
                         WeatherRow(logo: "wind", name: "Wind speed", value: (weather.wind.speed.roundDouble() + " m/s"))
