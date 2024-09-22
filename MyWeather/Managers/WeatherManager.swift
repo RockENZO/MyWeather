@@ -16,7 +16,7 @@ import CoreLocation
 class WeatherManager {
     // HTTP request to get the current weather depending on the coordinates we got from LocationManager
     func getCurrentWeather(latitude: CLLocationDegrees, longitude: CLLocationDegrees) async throws -> ResponseBody {
-        guard let url = URL(string: "https://api.openweathermap.org/data/2.5/weather?lat=\(latitude)&lon=\(longitude)&appid=\("fe7f2154040d53c22f9d4982088d0e6b")&units=metric") else { fatalError("Missing URL") }
+        guard let url = URL(string: "https://api.openweathermap.org/data/2.5/weather?lat=\(latitude)&lon=\(longitude)&appid=\("YOUR_API_KEY")&units=metric") else { fatalError("Missing URL") }
 
         let urlRequest = URLRequest(url: url)
         
@@ -31,7 +31,7 @@ class WeatherManager {
 
     // HTTP request to get the weather forecast depending on the coordinates we got from LocationManager
     func getWeatherForecast(latitude: CLLocationDegrees, longitude: CLLocationDegrees) async throws -> ForecastResponse {
-        guard let url = URL(string: "https://api.openweathermap.org/data/2.5/forecast?lat=\(latitude)&lon=\(longitude)&appid=\("fe7f2154040d53c22f9d4982088d0e6b")&units=metric") else { fatalError("Missing URL") }
+        guard let url = URL(string: "https://api.openweathermap.org/data/2.5/forecast?lat=\(latitude)&lon=\(longitude)&appid=\("YOUR_API_KEY")&units=metric") else { fatalError("Missing URL") }
 
         let urlRequest = URLRequest(url: url)
         
