@@ -228,8 +228,8 @@ struct WeatherView: View {
         // When card is fully down (offset 0) -> baseOpacity
         // When fully dragged up (offset = -maxDrag) -> maxOpacity
         let dragProgress = max(0, min(1, -totalOffset / maxDrag))
-        let baseOpacity = 0.15
-        let maxOpacity = 0.35
+        let baseOpacity = 0.25
+        let maxOpacity = 0.45
         return baseOpacity + dragProgress * (maxOpacity - baseOpacity)
     }
 }

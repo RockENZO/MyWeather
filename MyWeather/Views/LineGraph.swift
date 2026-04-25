@@ -37,15 +37,7 @@ struct LineGraph: View {
                                     if index == 0 {
                                         path.move(to: CGPoint(x: xPosition, y: yPosition))
                                     } else {
-                                        let previousPoint = dataPoints[index - 1]
-                                        let previousXPosition = width * CGFloat(index - 1) / CGFloat(dataPoints.count - 1)
-                                        let previousNormalizedTemp = (previousPoint.temp - minTemp) / tempRange
-                                        let previousYPosition = height * (1 - CGFloat(previousNormalizedTemp))
-                                        
-                                        let controlPoint1 = CGPoint(x: (previousXPosition + xPosition) / 2, y: previousYPosition)
-                                        let controlPoint2 = CGPoint(x: (previousXPosition + xPosition) / 2, y: yPosition)
-                                        
-                                        path.addCurve(to: CGPoint(x: xPosition, y: yPosition), control1: controlPoint1, control2: controlPoint2)
+                                        path.addLine(to: CGPoint(x: xPosition, y: yPosition))
                                     }
                                 }
                             }
@@ -63,7 +55,7 @@ struct LineGraph: View {
                                         .position(x: xPosition, y: yPosition)
                                     
                                     if index % 5 == 0 {
-                                        Text("\(point.temp.roundDouble())°")
+                                        Text("\(Int(point.temp.rounded()))°")
                                             .font(.system(size: 16))
                                             .bold()
                                             .foregroundColor(.glassText)
