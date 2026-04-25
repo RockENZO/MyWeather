@@ -24,6 +24,7 @@ struct LoadingView: View {
                 endPoint: .bottomTrailing
             )
                 .edgesIgnoringSafeArea(.all)
+                .glassBackground(tint: .primary, opacity: 0.1)
                 .animation(
                     Animation.linear(duration: 6).repeatForever(autoreverses: true),
                     value: isAnimating
@@ -40,7 +41,7 @@ struct LoadingView: View {
                 
                 Text("Loading Weather Data...")
                     .font(.title)
-                    .foregroundColor(.white)
+                    .foregroundColor(.glassText)
                     .bold()
             }
             .onAppear {

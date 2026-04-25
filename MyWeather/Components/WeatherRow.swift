@@ -7,6 +7,7 @@
 
 
 import SwiftUI
+import SwiftUI
 
 struct WeatherRow: View {
     var logo: String

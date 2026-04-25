@@ -64,7 +64,7 @@ struct ContentView: View {
                         }
                     }
                 }
-                .background(Color(hue: 0.656, saturation: 0.787, brightness: 0.354))
+                .glassBackground(tint: .primary, opacity: 0.18)
                 .preferredColorScheme(.dark)
             }
         }
