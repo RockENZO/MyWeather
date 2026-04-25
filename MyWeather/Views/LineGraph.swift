@@ -5,15 +5,6 @@
 //  Created by Rock on 9/21/2024.
 //
 
-
-
-//
-//  LineGraph.swift
-//  MyWeather
-//
-//  Created by Rock on 9/21/2024.
-//
-
 import SwiftUI
 
 struct LineGraph: View {
@@ -25,8 +16,8 @@ struct LineGraph: View {
             Text("Hourly Forecast")
                 .font(.title2)
                 .bold()
-                .foregroundColor(.white)
-                
+                .foregroundColor(.glassText)
+            
             GeometryReader { geometry in
                 let width = geometry.size.width
                 let height = geometry.size.height
@@ -67,7 +58,7 @@ struct LineGraph: View {
                                 
                                 VStack {
                                     Circle()
-                                        .fill(Color.orange)
+                                        .fill(Color.orange.opacity(0.8))
                                         .frame(width: 10, height: 10) // Increased point size from 8 to 10
                                         .position(x: xPosition, y: yPosition)
                                     
@@ -75,13 +66,13 @@ struct LineGraph: View {
                                         Text("\(point.temp.roundDouble())°")
                                             .font(.system(size: 16))
                                             .bold()
-                                            .foregroundColor(.white)
+                                            .foregroundColor(.glassText)
                                             .position(x: xPosition, y: yPosition - 39)
                                     }
                                     
                                     Text(point.time)
                                         .font(.caption)
-                                        .foregroundColor(.white)
+                                        .foregroundColor(.glassSecondaryText)
                                         .position(x: xPosition, y: height - 10)
                                 }
                             }
@@ -92,9 +83,10 @@ struct LineGraph: View {
                     .frame(width: width * CGFloat(dataPoints.count - 1) / CGFloat(dataPoints.count - 1))
                 }
             }
-            .frame(height: 150)
-            .cornerRadius(20)
         }
+        .frame(height: 150)
+        .cornerRadius(20)
+        .glassBackground(tint: .primary, opacity: 0.15)
     }
 }
 

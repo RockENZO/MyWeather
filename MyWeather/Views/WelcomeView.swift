@@ -29,7 +29,7 @@ struct WelcomeView: View {
             }
             .cornerRadius(30)
             .symbolVariant(.fill)
-            .foregroundColor(.white)
+            .foregroundColor(.glassText)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(

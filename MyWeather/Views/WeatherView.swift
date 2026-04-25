@@ -5,7 +5,6 @@
 //  Created by Rock on 15/9/2024.
 //
 
-
 import SwiftUI
 import MapKit
 
@@ -42,17 +41,21 @@ struct WeatherView: View {
         return currentTime >= sunriseTime && currentTime < sunsetTime
     }
     
+    private var glassTint: Color {
+        isDaytime ? Color.blue : Color.purple
+    }
+    
     var body: some View {
         ZStack(alignment: .leading) {
             VStack {
                 VStack(alignment: .leading, spacing: 5) {
                     Text(weather.name)
                         .font(titleFont)
-                        .foregroundColor(.white) // Ensure text is visible
+                        .foregroundColor(.glassText)
                     Text("Today, \(Date().formatted(.dateTime.month().day().hour().minute()))")
                         .font(bodyFont)
                         .fontWeight(.light)
-                        .foregroundColor(.white) // Ensure text is visible
+                        .foregroundColor(.glassText)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 
@@ -64,7 +67,7 @@ struct WeatherView: View {
                             Image(systemName: isDaytime ? "cloud.sun" : "cloud.moon")
                                 .font(.system(size: 50))
                                 .bold()
-                                .foregroundColor(.white) // Ensure icon is visible
+                                .foregroundColor(.glassText)
                             
                             Text("\(weather.weather[0].main)")
                                 .font(bodyFont)
@@ -79,7 +82,7 @@ struct WeatherView: View {
                             .font(.system(size: 80))
                             .fontWeight(.bold)
                             .padding()
-                            .foregroundColor(.white) // Ensure text is visible
+                            .foregroundColor(.glassText)
                             .onAppear {
                                 let targetTemperature = Int(weather.main.feelsLike)
                                 Timer.scheduledTimer(withTimeInterval: 0.08, repeats: true) { timer in
@@ -99,17 +102,8 @@ struct WeatherView: View {
                     VStack {
                         LineGraph(dataPoints: forecast.list.map { (time: $0.dt_txt, temp: $0.main.temp) })
                             .frame(height: 200) // Set the height of the graph
-                            .background(
-                                LinearGradient(
-                                    gradient: Gradient(colors: [.blue, .purple]),
-                                    startPoint: .topLeading,
-                                    endPoint: .bottomTrailing
-                                )
-                                .opacity(0.8)
-                            )
+                            .glassBackground(tint: .blue, opacity: 0.15)
                             .cornerRadius(20)
-                            .background(Color.clear)
-                            .zIndex(-1)
                     } // Ensure the graph is behind other content
                     
                     Spacer()
@@ -118,6 +112,7 @@ struct WeatherView: View {
             }
             .padding()
             .frame(maxWidth: .infinity, alignment: .leading)
+            .glassBackground(tint: glassTint, opacity: 0.2)
             
             VStack {
                 Spacer()
@@ -125,49 +120,36 @@ struct WeatherView: View {
                 VStack(alignment: .leading, spacing: 20) {
                     Text("Weather now")
                         .font(titleFont)
-                        .foregroundColor(.white) // Ensure text is visible
+                        .foregroundColor(.glassText)
                         
                     HStack {
                         WeatherRow(logo: "thermometer", name: "Min temp", value: (weather.main.tempMin.roundDouble() + "°"))
-                            .font(valueFont)
-                            .foregroundColor(.white) // Ensure text is visible
+                            .foregroundColor(.glassText)
                         Spacer()
                         WeatherRow(logo: "thermometer", name: "Max temp", value: (weather.main.tempMax.roundDouble() + "°"))
-                            .font(valueFont)
-                            .foregroundColor(.white) // Ensure text is visible
+                            .foregroundColor(.glassText)
                     }
                     
                     HStack {
                         WeatherRow(logo: "cloud.fill", name: "Cloudiness", value: "\(weather.clouds.all)" + "%")
-                            .font(valueFont)
-                            .foregroundColor(.white) // Ensure text is visible
+                            .foregroundColor(.glassText)
                         Spacer()
                         WeatherRow(logo: "humidity", name: "Humidity", value: "\(weather.main.humidity.roundDouble())%")
-                            .font(valueFont)
-                            .foregroundColor(.white) // Ensure text is visible
+                            .foregroundColor(.glassText)
                     }
                     HStack {
                         WeatherRow(logo: "location.north.line", name: "Wind Direction", value: "\(Int(weather.wind.deg))°")
-                            .font(valueFont)
-                            .foregroundColor(.white) // Ensure text is visible
+                            .foregroundColor(.glassText)
                         Spacer()
                         WeatherRow(logo: "wind", name: "Wind speed", value: (weather.wind.speed.roundDouble() + " m/s"))
-                            .font(valueFont)
+                            .foregroundColor(.glassText)
                             .frame(width: 170)
-                            .foregroundColor(.white) // Ensure text is visible
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding()
                 .padding(.bottom, 20)
-                .background(
-                    LinearGradient(
-                        gradient: Gradient(colors: [.blue, .purple]),
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-                )
-                .cornerRadius(40)
+                .glassCard(tint: glassTint, opacity: 0.15)
                 .offset(y: startingOffsetY + currentDragOffsetY + endingOffsetY)
                 .gesture(
                     DragGesture()
@@ -196,24 +178,24 @@ struct WeatherView: View {
                     Spacer()
                     Text("For More Info")
                         .font(titleFont)
-                        .foregroundColor(.white) // Ensure text is visible
+                        .foregroundColor(.glassText)
                     
                     ProgressView(value: (Double(weather.main.pressure) - 950) / 100) {
                         Text("Pressure")
                             .font(headingFont)
                             .bold()
-                            .foregroundColor(.white) // Ensure text is visible
+                            .foregroundColor(.glassText)
                     }
-                    .progressViewStyle(LinearProgressViewStyle(tint: .white))
+                    .progressViewStyle(LinearProgressViewStyle(tint: .glassText))
                     .frame(width: 350)
                     .frame(maxWidth: .infinity)
                     
                     ProgressView(value: Double(weather.visibility) / 10000) {
                         Text("Visibility")
                             .font(headingFont)
-                            .foregroundColor(.white) // Ensure text is visible
+                            .foregroundColor(.glassText)
                     }
-                    .progressViewStyle(LinearProgressViewStyle(tint: .white))
+                    .progressViewStyle(LinearProgressViewStyle(tint: .glassText))
                     .frame(width: 350)
                     .frame(maxWidth: .infinity)
                     .padding([.top, .bottom], 10)
@@ -226,31 +208,14 @@ struct WeatherView: View {
                 }
                 .frame(maxWidth: .infinity,maxHeight: 360)
                 .padding()
-                .foregroundColor(.white)
-                .background(
-                    LinearGradient(
-                        gradient: Gradient(colors: [.orange, .pink]),
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-                )
-                .cornerRadius(40)
+                .foregroundColor(.glassText)
+                .glassCard(tint: .orange, opacity: 0.12)
                 .shadow(radius: 10)
                 .offset(y: UIScreen.main.bounds.height * 0.40)
                 .padding(.bottom, 280)
             }
         }
         .edgesIgnoringSafeArea(.bottom)
-        .background(
-            LinearGradient(
-                gradient: Gradient(colors: [
-                    Color(hue: 0.656, saturation: 0.787, brightness: 0.954), // Lightened shade
-                    Color(hue: 0.656, saturation: 0.787, brightness: 0.054)  // Darkened shade
-                ]),
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-        )
         .preferredColorScheme(.dark)
     }
 }
