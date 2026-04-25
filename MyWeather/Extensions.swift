@@ -1,35 +1,101 @@
-//
-//  Extensions.swift
-//  MyWeather
-//
-//  Created by Rock on 15/9/2024.
-//
-
-import Foundation
 import SwiftUI
 
-// Extension for rounded Double to 0 decimals
-extension Double {
-    func roundDouble() -> String {
-        return String(format: "%.0f", self)
-    }
-}
+// MARK: - Liquid Glass Effects (iOS 26)
+// These extensions provide Liquid Glass effects that will be available in iOS 26
+// For now, we're using a combination of blur and opacity to simulate the effect
+// When iOS 26 SDK is available, these can be replaced with native GlassMaterial
 
-
-// Extension for adding rounded corners to specific corners
 extension View {
-    func cornerRadius(_ radius: CGFloat, corners: UIRectCorner) -> some View {
-        clipShape(RoundedCorner(radius: radius, corners: corners) )
+    /// Applies a Liquid Glass background effect
+    /// - Parameters:
+    ///   - tint: The tint color for the glass effect
+    ///   - opacity: The opacity of the glass (0.0 - 1.0)
+    ///   - blur: The blur radius for the glass effect
+    /// - Returns: A view with Liquid Glass background
+    func glassBackground(
+        tint: Color = .primary,
+        opacity: Double = 0.2,
+        blur: CGFloat = 20
+    ) -> some View {
+        self.background(
+            Color(.systemBackground)
+                .opacity(opacity)
+                .blur(radius: blur)
+                .overlay(
+                    tint
+                        .opacity(opacity * 0.3)
+                )
+        )
+    }
+    
+    /// Applies a Liquid Glass card effect with enhanced depth
+    func glassCard(
+        tint: Color = .primary,
+        opacity: Double = 0.15,
+        blur: CGFloat = 25,
+        cornerRadius: CGFloat = 20
+    ) -> some View {
+        self.background(
+            Color(.systemBackground)
+                .opacity(opacity)
+                .blur(radius: blur)
+                .overlay(
+                    tint
+                        .opacity(opacity * 0.2)
+                )
+        )
+        .cornerRadius(cornerRadius)
+        .overlay(
+            RoundedRectangle(cornerRadius: cornerRadius)
+                .strokeBorder(
+                    Color(.systemBackground)
+                        .opacity(0.1),
+                    lineWidth: 0.5
+                )
+        )
+        .shadow(color: Color.black.opacity(0.05), radius: 10, x: 0, y: 5)
+    }
+    
+    /// Applies an elevated Liquid Glass effect for floating elements
+    func elevatedGlass(
+        tint: Color = .primary,
+        opacity: Double = 0.1,
+        blur: CGFloat = 30
+    ) -> some View {
+        self.background(
+            Color(.systemBackground)
+                .opacity(opacity)
+                .blur(radius: blur)
+                .overlay(
+                    tint
+                        .opacity(opacity * 0.2)
+                )
+        )
+        .shadow(color: Color.black.opacity(0.1), radius: 15, x: 0, y: 10)
     }
 }
 
-// Custom RoundedCorner shape used for cornerRadius extension above
-struct RoundedCorner: Shape {
-    var radius: CGFloat = .infinity
-    var corners: UIRectCorner = .allCorners
-
-    func path(in rect: CGRect) -> Path {
-        let path = UIBezierPath(roundedRect: rect, byRoundingCorners: corners, cornerRadii: CGSize(width: radius, height: radius))
-        return Path(path.cgPath)
+// MARK: - Dynamic Color Extensions
+extension Color {
+    /// Returns a color that adapts to glass backgrounds
+    static var glassText: Color {
+        .primary
+    }
+    
+    /// Returns a secondary color for glass backgrounds
+    static var glassSecondaryText: Color {
+        .secondary
+    }
+    
+    /// Creates a color from hue/saturation/brightness with alpha without conflicting with Color's native initializer
+    static func fromHSB(hue: Double, saturation: Double, brightness: Double, opacity: Double = 1.0) -> Color {
+        #if os(iOS) || os(tvOS) || os(watchOS) || os(visionOS)
+        return Color(UIColor(hue: CGFloat(hue), saturation: CGFloat(saturation), brightness: CGFloat(brightness), alpha: CGFloat(opacity)))
+        #elseif os(macOS)
+        return Color(NSColor(hue: CGFloat(hue), saturation: CGFloat(saturation), brightness: CGFloat(brightness), alpha: CGFloat(opacity)))
+        #else
+        // Fallback to SwiftUI's built-in initializer if available
+        return Color(hue: hue, saturation: saturation, brightness: brightness, opacity: opacity)
+        #endif
     }
 }

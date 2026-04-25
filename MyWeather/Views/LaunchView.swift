@@ -22,7 +22,7 @@ struct LaunchView: View {
             // Weather icon with 3D rotation, bounce, and color change
             Image(systemName: "cloud.sun.fill")
                 .font(.system(size: 100))
-                .foregroundColor(color)
+                .foregroundColor(.glassText)
                 .rotation3DEffect(.degrees(rotationX), axis: (x: 1.0, y: 0.0, z: 0.0))
                 .scaleEffect(scale)
                 .opacity(opacity)
@@ -59,7 +59,7 @@ struct LaunchView: View {
             Text("MyWeather")
                 .font(.largeTitle)
                 .fontWeight(.bold)
-                .foregroundColor(color)
+                .foregroundColor(.glassText)
                 .scaleEffect(scale)
                 .opacity(opacity)
         }
