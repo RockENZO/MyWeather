@@ -123,10 +123,10 @@ struct WeatherView: View {
                         .foregroundColor(.glassText)
                         
                     HStack {
-                        WeatherRow(logo: "thermometer", name: "Min temp", value: (weather.main.tempMin.roundDouble() + "°"))
+                        WeatherRow(logo: "thermometer", name: "Min temp", value: (String(format: "%.0f", weather.main.tempMin) + "°"))
                             .foregroundColor(.glassText)
                         Spacer()
-                        WeatherRow(logo: "thermometer", name: "Max temp", value: (weather.main.tempMax.roundDouble() + "°"))
+                        WeatherRow(logo: "thermometer", name: "Max temp", value: (String(format: "%.0f", weather.main.tempMax) + "°"))
                             .foregroundColor(.glassText)
                     }
                     
@@ -134,14 +134,14 @@ struct WeatherView: View {
                         WeatherRow(logo: "cloud.fill", name: "Cloudiness", value: "\(weather.clouds.all)" + "%")
                             .foregroundColor(.glassText)
                         Spacer()
-                        WeatherRow(logo: "humidity", name: "Humidity", value: "\(weather.main.humidity.roundDouble())%")
+                        WeatherRow(logo: "humidity", name: "Humidity", value: String(format: "%.0f%%", weather.main.humidity))
                             .foregroundColor(.glassText)
                     }
                     HStack {
                         WeatherRow(logo: "location.north.line", name: "Wind Direction", value: "\(Int(weather.wind.deg))°")
                             .foregroundColor(.glassText)
                         Spacer()
-                        WeatherRow(logo: "wind", name: "Wind speed", value: (weather.wind.speed.roundDouble() + " m/s"))
+                        WeatherRow(logo: "wind", name: "Wind speed", value: (String(format: "%.0f", weather.wind.speed) + " m/s"))
                             .foregroundColor(.glassText)
                             .frame(width: 170)
                     }
@@ -149,7 +149,8 @@ struct WeatherView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding()
                 .padding(.bottom, 20)
-                .glassCard(tint: glassTint, opacity: 0.15)
+                // Dynamic opacity based on drag offset
+                .glassCard(tint: glassTint, opacity: computeCardOpacity())
                 .offset(y: startingOffsetY + currentDragOffsetY + endingOffsetY)
                 .gesture(
                     DragGesture()
@@ -217,6 +218,19 @@ struct WeatherView: View {
         }
         .edgesIgnoringSafeArea(.bottom)
         .preferredColorScheme(.dark)
+    }
+    
+    /// Compute dynamic opacity for the weather card based on drag position
+    private func computeCardOpacity() -> Double {
+        let totalOffset = startingOffsetY + currentDragOffsetY + endingOffsetY
+        let screenHeight = UIScreen.main.bounds.height
+        let maxDrag = screenHeight * 0.5 // full drag up distance
+        // When card is fully down (offset 0) -> baseOpacity
+        // When fully dragged up (offset = -maxDrag) -> maxOpacity
+        let dragProgress = max(0, min(1, -totalOffset / maxDrag))
+        let baseOpacity = 0.15
+        let maxOpacity = 0.35
+        return baseOpacity + dragProgress * (maxOpacity - baseOpacity)
     }
 }
 
