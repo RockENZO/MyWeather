@@ -229,7 +229,7 @@ struct WeatherView: View {
         // When fully dragged up (offset = -maxDrag) -> maxOpacity
         let dragProgress = max(0, min(1, -totalOffset / maxDrag))
         let baseOpacity = 0.25
-        let maxOpacity = 0.45
+        let maxOpacity = 0.99
         return baseOpacity + dragProgress * (maxOpacity - baseOpacity)
     }
 }

@@ -87,13 +87,15 @@ extension Color {
         .secondary
     }
     
-    /// Creates a color from hue/saturation/brightness with alpha
-    init(hue: Double, saturation: Double, brightness: Double, opacity: Double = 1.0) {
-        self.init(
-            hue: hue,
-            saturation: saturation,
-            brightness: brightness,
-            opacity: opacity
-        )
+    /// Creates a color from hue/saturation/brightness with alpha without conflicting with Color's native initializer
+    static func fromHSB(hue: Double, saturation: Double, brightness: Double, opacity: Double = 1.0) -> Color {
+        #if os(iOS) || os(tvOS) || os(watchOS) || os(visionOS)
+        return Color(UIColor(hue: CGFloat(hue), saturation: CGFloat(saturation), brightness: CGFloat(brightness), alpha: CGFloat(opacity)))
+        #elseif os(macOS)
+        return Color(NSColor(hue: CGFloat(hue), saturation: CGFloat(saturation), brightness: CGFloat(brightness), alpha: CGFloat(opacity)))
+        #else
+        // Fallback to SwiftUI's built-in initializer if available
+        return Color(hue: hue, saturation: saturation, brightness: brightness, opacity: opacity)
+        #endif
     }
 }

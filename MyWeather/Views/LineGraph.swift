@@ -78,7 +78,7 @@ struct LineGraph: View {
         }
         .frame(height: 150)
         .cornerRadius(20)
-        .glassBackground(tint: .primary, opacity: 0.15)
+        .glassBackground(tint: .primary, opacity: 0)
     }
 }
 
