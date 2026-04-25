@@ -21,16 +21,18 @@ struct LineGraph: View {
             GeometryReader { geometry in
                 let width = geometry.size.width
                 let height = geometry.size.height
-                let maxTemp = dataPoints.map { $0.temp }.max() ?? 1
-                let minTemp = dataPoints.map { $0.temp }.min() ?? 0
+                // Smooth data to reduce fluctuation
+                let smoothed = smoothData(dataPoints)
+                let maxTemp = smoothed.map { $0.temp }.max() ?? 1
+                let minTemp = smoothed.map { $0.temp }.min() ?? 0
                 let tempRange = maxTemp - minTemp
                 
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 0) {
                         ZStack {
                             Path { path in
-                                for (index, point) in dataPoints.enumerated() {
-                                    let xPosition = width * CGFloat(index) / CGFloat(dataPoints.count - 1)
+                                for (index, point) in smoothed.enumerated() {
+                                    let xPosition = width * CGFloat(index) / CGFloat(smoothed.count - 1)
                                     let normalizedTemp = (point.temp - minTemp) / tempRange
                                     let yPosition = height * (1 - CGFloat(normalizedTemp))
                                     
@@ -43,8 +45,8 @@ struct LineGraph: View {
                             }
                             .stroke(Color.blue, lineWidth: 4) // Increased line width from 2 to 4
                             
-                            ForEach(Array(dataPoints.enumerated()), id: \.offset) { index, point in
-                                let xPosition = width * CGFloat(index) / CGFloat(dataPoints.count - 1)
+                            ForEach(Array(smoothed.enumerated()), id: \.offset) { index, point in
+                                let xPosition = width * CGFloat(index) / CGFloat(smoothed.count - 1)
                                 let normalizedTemp = (point.temp - minTemp) / tempRange
                                 let yPosition = height * (1 - CGFloat(normalizedTemp))
                                 
@@ -72,13 +74,27 @@ struct LineGraph: View {
                         .frame(width: width, height: height)
                         .scaleEffect(0.8) // Scale the graph to be smaller
                     }
-                    .frame(width: width * CGFloat(dataPoints.count - 1) / CGFloat(dataPoints.count - 1))
+                    .frame(width: width * CGFloat(smoothed.count - 1) / CGFloat(smoothed.count - 1))
                 }
             }
         }
         .frame(height: 150)
         .cornerRadius(20)
-        .glassBackground(tint: .primary, opacity: 0)
+        .glassBackground(tint: .primary, opacity: 0.15)
+    }
+    
+    /// Simple moving average smoothing to reduce fluctuations
+    private func smoothData(_ points: [(time: String, temp: Double)]) -> [(time: String, temp: Double)] {
+        guard points.count >= 3 else { return points }
+        var smoothed = [(time: String, temp: Double)]()
+        for i in 0..<points.count {
+            let start = max(0, i-1)
+            let end = min(points.count-1, i+1)
+            let sum = points[start...end].reduce(0.0) { $0 + $1.temp }
+            let avg = sum / Double(end - start + 1)
+            smoothed.append((time: points[i].time, temp: avg))
+        }
+        return smoothed
     }
 }
 
