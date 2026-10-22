@@ -11,16 +11,19 @@ import MapKit
 struct WeatherView: View {
     var weather: ResponseBody
     var forecast: ForecastResponse
+    private var observationDate: Date?
     
     @State var startingOffsetY: CGFloat = 0
     @State var currentDragOffsetY: CGFloat = 0
     @State var endingOffsetY: CGFloat = 0
     @State var isCardUp: Bool = false
+    @State private var cardHeight: CGFloat = 0
     
     @State private var region: MKCoordinateRegion
     @State private var animatedTemperature: Int = 0
 
-    init(weather: ResponseBody, forecast: ForecastResponse) {
+    init(weather: ResponseBody, forecast: ForecastResponse, observationDate: Date? = nil) {
+        self.observationDate = observationDate
         self.weather = weather
         self.forecast = forecast
         self._region = State(initialValue: MKCoordinateRegion(
@@ -35,7 +38,7 @@ struct WeatherView: View {
     private let valueFont = Font.body.bold()
     
     private var isDaytime: Bool {
-        let currentTime = Date()
+        let currentTime = observationDate ?? Date()
         let sunriseTime = Date(timeIntervalSince1970: weather.sys.sunrise)
         let sunsetTime = Date(timeIntervalSince1970: weather.sys.sunset)
         return currentTime >= sunriseTime && currentTime < sunsetTime
@@ -46,13 +49,15 @@ struct WeatherView: View {
     }
     
     var body: some View {
+        GeometryReader { geometry in
+        let maximumLift = max(0, geometry.size.height - cardHeight - 16)
         ZStack(alignment: .leading) {
             VStack {
                 VStack(alignment: .leading, spacing: 5) {
                     Text(weather.name)
                         .font(titleFont)
                         .foregroundColor(.glassText)
-                    Text("Today, \(Date().formatted(.dateTime.month().day().hour().minute()))")
+                    Text("\(observationDate == nil ? "Today" : "Observed"), \((observationDate ?? Date()).formatted(.dateTime.month().day().hour().minute()))")
                         .font(bodyFont)
                         .fontWeight(.light)
                         .foregroundColor(.glassText)
@@ -149,8 +154,13 @@ struct WeatherView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding()
                 .padding(.bottom, 20)
-                // Dynamic opacity based on drag offset
-                .glassCard(tint: glassTint, opacity: computeCardOpacity())
+                .background(GeometryReader { card in
+                    Color.clear
+                        .onAppear { cardHeight = card.size.height }
+                        .onChange(of: card.size.height) { cardHeight = $0 }
+                })
+                // Use the available safe-area height, not the full display height.
+                .glassCard(tint: glassTint, opacity: computeCardOpacity(maxDrag: maximumLift))
                 .offset(y: startingOffsetY + currentDragOffsetY + endingOffsetY)
                 .gesture(
                     DragGesture()
@@ -163,12 +173,12 @@ struct WeatherView: View {
                         .onEnded { value in
                             withAnimation(.spring()) {
                                 if currentDragOffsetY < -100 {
-                                    endingOffsetY = -UIScreen.main.bounds.height * 0.5
+                                    endingOffsetY = -maximumLift
                                 } else if endingOffsetY != 0 && currentDragOffsetY > 100 {
                                     endingOffsetY = 0
                                 }
                                 currentDragOffsetY = 0
-                                isCardUp = endingOffsetY == -UIScreen.main.bounds.height * 0.5
+                                isCardUp = endingOffsetY < 0
                             }
                         }
                 )
@@ -176,7 +186,6 @@ struct WeatherView: View {
             
             if isCardUp {
                 VStack(spacing: 10) {
-                    Spacer()
                     Text("For More Info")
                         .font(titleFont)
                         .foregroundColor(.glassText)
@@ -202,32 +211,29 @@ struct WeatherView: View {
                     .padding([.top, .bottom], 10)
                     
                     Map(coordinateRegion: $region)
-                        .frame(width:373, height: 230)
+                        .frame(height: max(0, min(230, geometry.size.height - cardHeight - 180)))
                         .cornerRadius(40)
-                    Spacer()
-                    
                 }
-                .frame(maxWidth: .infinity,maxHeight: 360)
+                .frame(maxWidth: .infinity)
                 .padding()
                 .foregroundColor(.glassText)
                 .glassCard(tint: .orange, opacity: 0.12)
                 .shadow(radius: 10)
-                .offset(y: UIScreen.main.bounds.height * 0.40)
-                .padding(.bottom, 280)
+                .frame(height: max(0, geometry.size.height - cardHeight - 40))
+                .position(x: geometry.size.width / 2,
+                          y: cardHeight + 32 + max(0, geometry.size.height - cardHeight - 40) / 2)
             }
         }
-        .edgesIgnoringSafeArea(.bottom)
         .preferredColorScheme(.dark)
+        }
     }
     
     /// Compute dynamic opacity for the weather card based on drag position
-    private func computeCardOpacity() -> Double {
+    private func computeCardOpacity(maxDrag: CGFloat) -> Double {
         let totalOffset = startingOffsetY + currentDragOffsetY + endingOffsetY
-        let screenHeight = UIScreen.main.bounds.height
-        let maxDrag = screenHeight * 0.5 // full drag up distance
         // When card is fully down (offset 0) -> baseOpacity
         // When fully dragged up (offset = -maxDrag) -> maxOpacity
-        let dragProgress = max(0, min(1, -totalOffset / maxDrag))
+        let dragProgress = max(0, min(1, -totalOffset / max(1, maxDrag)))
         let baseOpacity = 0.25
         let maxOpacity = 0.99
         return baseOpacity + dragProgress * (maxOpacity - baseOpacity)

@@ -1,0 +1,19 @@
+{
+  "recording_run": "https://github.com/RockENZO/MyWeather/actions/runs/39782498315",
+  "recorded_source_sha": "1936b1fa9ef2fc0b3f819dcdd9d4d6e1e16097be",
+  "device": "iPhone 17 Pro / iOS 26.5",
+  "xcode": "26.6",
+  "verification": "testRecordedDemo passed: attribution present, card expands, expanded title stays visible, details disappear after downward drag.",
+  "editing": "Retain source intervals 54.6\u201358.0 and 64.0\u201384.8 seconds; remove simulator/test-runner startup and idle loading. No synthetic UI frames.",
+  "gif": {
+    "path": "SimulatorScreenRecording.gif",
+    "width": 484,
+    "height": 1052,
+    "fps": 12,
+    "duration_seconds": 24.25,
+    "frames": 291,
+    "sha256": "01f8812e91f43f9c20daf946d5f68a7f102d2e905ee59b6173dfbf196daa9109"
+  },
+  "weather_capture": "manifest.json",
+  "scope": "Recorded genuine public API responses, replayed without API credentials in the simulator. No live in-app network or permissions claim."
+}

@@ -1,5 +1,11 @@
 name: Forecast geometry and iOS build
 on:
+  workflow_dispatch:
+    inputs:
+      reuse_capture:
+        description: Replay the checked-in public capture without calling the API
+        type: boolean
+        default: true
   pull_request:
   push:
     branches: [main]
@@ -7,9 +13,12 @@ permissions:
   contents: read
 jobs:
   ios:
+    if: github.event_name != 'workflow_dispatch'
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Test credential-isolated capture
+        run: python3 -m unittest discover -s scripts -p 'test_capture_weather.py'
       - name: Test forecast geometry
         run: |
           swiftc MyWeather/ForecastGeometry.swift scripts/test-forecast.swift -o "$RUNNER_TEMP/test-forecast"
@@ -20,3 +29,48 @@ jobs:
           -sdk iphonesimulator -destination 'generic/platform=iOS Simulator'
           -derivedDataPath "$RUNNER_TEMP/MyWeather-build"
           CODE_SIGNING_ALLOWED=NO build
+  capture:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Use checked-in public capture
+        if: inputs.reuse_capture
+        run: |
+          mkdir -p "$RUNNER_TEMP/WeatherDemo"
+          cp docs/demo-capture/*.json "$RUNNER_TEMP/WeatherDemo/"
+      - name: Capture Adelaide weather without exporting credentials
+        if: ${{ !inputs.reuse_capture }}
+        env:
+          OPENWEATHER_API_KEY: ${{ secrets.OPENWEATHER_API_KEY }}
+        run: python scripts/capture-weather.py --output "$RUNNER_TEMP/WeatherDemo"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: weather-demo-capture
+          path: ${{ runner.temp }}/WeatherDemo/
+          retention-days: 3
+          if-no-files-found: error
+  record:
+    if: github.event_name == 'workflow_dispatch'
+    needs: capture
+    runs-on: macos-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: weather-demo-capture
+          path: ${{ runner.temp }}/WeatherDemo/
+      - name: Record actual simulator interactions without API credentials
+        run: bash scripts/record-demo.sh
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: myweather-simulator-recording
+          path: ${{ runner.temp }}/MyWeatherRecording/
+          retention-days: 3
+          if-no-files-found: warn
