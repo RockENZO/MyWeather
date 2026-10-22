@@ -44,14 +44,18 @@ struct LoadingView: View {
                     .foregroundColor(.glassText)
                     .bold()
             }
-            .onAppear {
-                self.isAnimating = true
-                
-                // Change color every 0.5 seconds indefinitely
-                let colorChangeInterval: TimeInterval = 0.5
-                Timer.scheduledTimer(withTimeInterval: colorChangeInterval, repeats: true) { _ in
+            .task {
+                isAnimating = true
+                defer { isAnimating = false }
+                while !Task.isCancelled {
+                    do {
+                        try await Task.sleep(nanoseconds: 500_000_000)
+                    } catch {
+                        return
+                    }
+                    guard !Task.isCancelled else { return }
                     withAnimation(.easeInOut(duration: 0.5)) {
-                        self.color = gradientColors.randomElement() ?? .blue
+                        color = gradientColors.randomElement() ?? .blue
                     }
                 }
             }

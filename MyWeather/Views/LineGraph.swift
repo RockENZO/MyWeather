@@ -21,20 +21,20 @@ struct LineGraph: View {
             GeometryReader { geometry in
                 let width = geometry.size.width
                 let height = geometry.size.height
-                // Smooth data to reduce fluctuation
-                let smoothed = smoothData(dataPoints)
-                let maxTemp = smoothed.map { $0.temp }.max() ?? 1
-                let minTemp = smoothed.map { $0.temp }.min() ?? 0
-                let tempRange = maxTemp - minTemp
-                
-                ScrollView(.horizontal, showsIndicators: false) {
+                let points = ForecastGeometry.points(dataPoints)
+
+                if points.isEmpty {
+                    Text("Hourly forecast unavailable")
+                        .foregroundColor(.glassSecondaryText)
+                        .frame(width: width, height: height)
+                } else {
+
                     HStack(spacing: 0) {
                         ZStack {
                             Path { path in
-                                for (index, point) in smoothed.enumerated() {
-                                    let xPosition = width * CGFloat(index) / CGFloat(smoothed.count - 1)
-                                    let normalizedTemp = (point.temp - minTemp) / tempRange
-                                    let yPosition = height * (1 - CGFloat(normalizedTemp))
+                                for (index, point) in points.enumerated() {
+                                    let xPosition = width * point.x
+                                    let yPosition = height * point.y
                                     
                                     if index == 0 {
                                         path.move(to: CGPoint(x: xPosition, y: yPosition))
@@ -45,10 +45,9 @@ struct LineGraph: View {
                             }
                             .stroke(Color.blue, lineWidth: 4) // Increased line width from 2 to 4
                             
-                            ForEach(Array(smoothed.enumerated()), id: \.offset) { index, point in
-                                let xPosition = width * CGFloat(index) / CGFloat(smoothed.count - 1)
-                                let normalizedTemp = (point.temp - minTemp) / tempRange
-                                let yPosition = height * (1 - CGFloat(normalizedTemp))
+                            ForEach(Array(points.enumerated()), id: \.offset) { index, point in
+                                let xPosition = width * point.x
+                                let yPosition = height * point.y
                                 
                                 VStack {
                                     Circle()
@@ -57,7 +56,7 @@ struct LineGraph: View {
                                         .position(x: xPosition, y: yPosition)
                                     
                                     if index % 5 == 0 {
-                                        Text("\(Int(point.temp.rounded()))°")
+                                        Text("\(point.temperature.formatted(.number.precision(.fractionLength(0))))°")
                                             .font(.system(size: 16))
                                             .bold()
                                             .foregroundColor(.glassText)
@@ -74,7 +73,7 @@ struct LineGraph: View {
                         .frame(width: width, height: height)
                         .scaleEffect(0.8) // Scale the graph to be smaller
                     }
-                    .frame(width: width * CGFloat(smoothed.count - 1) / CGFloat(smoothed.count - 1))
+                    .frame(width: width)
                 }
             }
         }
@@ -83,19 +82,7 @@ struct LineGraph: View {
         .glassBackground(tint: .primary, opacity: 0)
     }
     
-    /// Simple moving average smoothing to reduce fluctuations
-    private func smoothData(_ points: [(time: String, temp: Double)]) -> [(time: String, temp: Double)] {
-        guard points.count >= 3 else { return points }
-        var smoothed = [(time: String, temp: Double)]()
-        for i in 0..<points.count {
-            let start = max(0, i-1)
-            let end = min(points.count-1, i+1)
-            let sum = points[start...end].reduce(0.0) { $0 + $1.temp }
-            let avg = sum / Double(end - start + 1)
-            smoothed.append((time: points[i].time, temp: avg))
-        }
-        return smoothed
-    }
+
 }
 
 struct LineGraph_Previews: PreviewProvider {
