@@ -11,6 +11,7 @@ import MapKit
 struct WeatherView: View {
     var weather: ResponseBody
     var forecast: ForecastResponse
+    private var observationDate: Date?
     
     @State var startingOffsetY: CGFloat = 0
     @State var currentDragOffsetY: CGFloat = 0
@@ -20,7 +21,8 @@ struct WeatherView: View {
     @State private var region: MKCoordinateRegion
     @State private var animatedTemperature: Int = 0
 
-    init(weather: ResponseBody, forecast: ForecastResponse) {
+    init(weather: ResponseBody, forecast: ForecastResponse, observationDate: Date? = nil) {
+        self.observationDate = observationDate
         self.weather = weather
         self.forecast = forecast
         self._region = State(initialValue: MKCoordinateRegion(
@@ -35,7 +37,7 @@ struct WeatherView: View {
     private let valueFont = Font.body.bold()
     
     private var isDaytime: Bool {
-        let currentTime = Date()
+        let currentTime = observationDate ?? Date()
         let sunriseTime = Date(timeIntervalSince1970: weather.sys.sunrise)
         let sunsetTime = Date(timeIntervalSince1970: weather.sys.sunset)
         return currentTime >= sunriseTime && currentTime < sunsetTime
@@ -52,7 +54,7 @@ struct WeatherView: View {
                     Text(weather.name)
                         .font(titleFont)
                         .foregroundColor(.glassText)
-                    Text("Today, \(Date().formatted(.dateTime.month().day().hour().minute()))")
+                    Text("\(observationDate == nil ? "Today" : "Observed"), \((observationDate ?? Date()).formatted(.dateTime.month().day().hour().minute()))")
                         .font(bodyFont)
                         .fontWeight(.light)
                         .foregroundColor(.glassText)
