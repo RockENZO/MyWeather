@@ -218,7 +218,6 @@ struct WeatherView: View {
                 .padding(.bottom, 280)
             }
         }
-        .edgesIgnoringSafeArea(.bottom)
         .preferredColorScheme(.dark)
     }
     

@@ -43,3 +43,23 @@ jobs:
           path: ${{ runner.temp }}/WeatherDemo/
           retention-days: 3
           if-no-files-found: error
+  record:
+    if: github.event_name == 'workflow_dispatch'
+    needs: capture
+    runs-on: macos-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: weather-demo-capture
+          path: ${{ runner.temp }}/WeatherDemo/
+      - name: Record actual simulator interactions without API credentials
+        run: bash scripts/record-demo.sh
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: myweather-simulator-recording
+          path: ${{ runner.temp }}/MyWeatherRecording/
+          retention-days: 3
+          if-no-files-found: warn

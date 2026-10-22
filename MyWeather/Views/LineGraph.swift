@@ -12,8 +12,8 @@ struct LineGraph: View {
     
     var body: some View {
         VStack(alignment: .center) {
-            // Add "Hourly Forecast" text above the LineGraph
-            Text("Hourly Forecast")
+            // Add "Forecast" text above the LineGraph
+            Text("Forecast")
                 .font(.title2)
                 .bold()
                 .foregroundColor(.glassText)

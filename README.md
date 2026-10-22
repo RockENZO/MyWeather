@@ -5,9 +5,16 @@ MyWeather is a SwiftUI-based weather application that provides current weather i
 ## Demo
 ![MyWeather App Demo](SimulatorScreenRecording.gif)
 
+Actual iOS Simulator recording using an Adelaide weather/forecast capture from
+OpenWeather, collected on **22 October 2026 at 12:34:27 UTC**. The recording
+replays that capture; it is not a continuous live weather connection. It shows
+the current UI and card interactions, with source/capture time visible in-frame.
+See [capture metadata](docs/demo-capture/manifest.json) and
+[recording instructions](docs/RECORDING.md).
+
 ## Features
 - Current weather data (temperature, feels like, min/max, humidity, wind, pressure, visibility, cloudiness)
-- Hourly forecast displayed as a smooth line graph
+- 3-hour forecast observations displayed as a smooth line graph
 - Location-based weather using CoreLocation
 - Launch animation with smooth transitions
 - Loading view with animated color cycling
@@ -31,7 +38,7 @@ MyWeather is a SwiftUI-based weather application that provides current weather i
 3. Once the location is obtained, the app fetches the current weather data.
 4. The main screen displays the temperature, wind speed, and humidity.
 5. Drag the “Weather now” card upward to reveal the map and more details; the card’s glass opacity increases as you drag.
-6. Scroll the hourly forecast line graph to see the temperature trend.
+6. View the forecast line graph to see the temperature trend.
 
 ## Code Overview
 - **LaunchView** – Displays the launching animation and transitions to `ContentView`.

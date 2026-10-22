@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "source": "OpenWeather",
+  "location": "Adelaide, AU",
+  "latitude": -34.9285,
+  "longitude": 138.6007,
+  "units": "metric",
+  "captured_at_utc": "2026-10-22T12:34:27Z",
+  "weather_observed_at": 1792672225,
+  "sha256": {
+    "weather.json": "14b8ba9ccbdaadc1ea9102422683248a424d2a9c2c38b8cf5f12723590ad65ee",
+    "forecast.json": "16c6ff11850ea455ac78774daba3f5f6cbfe9f5052a7a3c8960d7014b4a64f0e"
+  },
+  "scope": "Recorded API responses; replayed for UI recording, not a live connection."
+}
