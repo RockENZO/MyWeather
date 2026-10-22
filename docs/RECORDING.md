@@ -17,7 +17,7 @@ retrievable as plaintext through the API.
 Run the existing workflow manually (the manual job only captures weather):
 
 ```sh
-gh workflow run ios.yml --repo RockENZO/MyWeather --ref main
+gh workflow run ios.yml --repo RockENZO/MyWeather --ref main -f reuse_capture=false
 gh run list --repo RockENZO/MyWeather --event workflow_dispatch
 # Substitute the completed run's ID; download into a new directory.
 gh run download RUN_ID --repo RockENZO/MyWeather \
@@ -69,5 +69,5 @@ Stop recording with Ctrl-C. Trim simulator/test-runner startup footage using the
 actual video timeline; retain the real app animation, card gestures and capture
 attribution. Convert with a generated GIF palette (12 fps, about 402 pixels wide),
 inspect normal/expanded/collapsed frames, then replace `SimulatorScreenRecording.gif`.
-The UITest asserts the recorded-data attribution and that dragging reveals the
-details section; it is not a full UI regression suite.
+The UITest asserts the recorded-data attribution and that dragging reveals and
+then dismisses the details section; it is not a full UI regression suite.

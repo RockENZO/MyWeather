@@ -6,7 +6,7 @@ MyWeather is a SwiftUI-based weather application that provides current weather i
 ![MyWeather App Demo](SimulatorScreenRecording.gif)
 
 Actual iOS Simulator recording using an Adelaide weather/forecast capture from
-OpenWeather, collected on **22 October 2026 at 12:34:27 UTC**. The recording
+OpenWeather, collected on **22 October 2026 at 12:42:48 UTC**. The recording
 replays that capture; it is not a continuous live weather connection. It shows
 the current UI and card interactions, with source/capture time visible in-frame.
 See [capture metadata](docs/demo-capture/manifest.json) and

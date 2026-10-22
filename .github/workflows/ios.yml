@@ -1,6 +1,11 @@
 name: Forecast geometry and iOS build
 on:
   workflow_dispatch:
+    inputs:
+      reuse_capture:
+        description: Replay the checked-in public capture without calling the API
+        type: boolean
+        default: true
   pull_request:
   push:
     branches: [main]
@@ -33,7 +38,13 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.13'
+      - name: Use checked-in public capture
+        if: inputs.reuse_capture
+        run: |
+          mkdir -p "$RUNNER_TEMP/WeatherDemo"
+          cp docs/demo-capture/*.json "$RUNNER_TEMP/WeatherDemo/"
       - name: Capture Adelaide weather without exporting credentials
+        if: ${{ !inputs.reuse_capture }}
         env:
           OPENWEATHER_API_KEY: ${{ secrets.OPENWEATHER_API_KEY }}
         run: python scripts/capture-weather.py --output "$RUNNER_TEMP/WeatherDemo"

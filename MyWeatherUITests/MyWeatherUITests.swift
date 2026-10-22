@@ -44,14 +44,17 @@ final class MyWeatherUITests: XCTestCase {
         let start = card.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
         start.press(forDuration: 0.2, thenDragTo: start.withOffset(CGVector(dx: 0, dy: -350)))
         XCTAssertTrue(app.staticTexts["For More Info"].waitForExistence(timeout: 5))
+        XCTAssertGreaterThan(card.frame.minY, app.frame.minY + 20)
         Thread.sleep(forTimeInterval: 4)
         let screenshot = XCTAttachment(screenshot: app.screenshot())
         screenshot.name = "Recorded weather details"
         screenshot.lifetime = .keepAlways
         add(screenshot)
-        let raised = card.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+        // Use a visible row, even if a future card layout moves the title.
+        let raised = app.staticTexts["Humidity"].coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
         raised.press(forDuration: 0.2, thenDragTo: raised.withOffset(CGVector(dx: 0, dy: 350)))
         Thread.sleep(forTimeInterval: 3)
+        XCTAssertFalse(app.staticTexts["For More Info"].exists)
     }
 
     @MainActor
