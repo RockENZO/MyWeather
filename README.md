@@ -48,3 +48,20 @@ This project is licensed under the MIT License. See the LICENSE file for details
 ## Acknowledgements
 - [OpenWeatherMap API](https://openweathermap.org/api) for providing weather data.
 - [SwiftUI](https://developer.apple.com/xcode/swiftui/) for the UI framework.
+### Reliability checks
+
+Hourly forecast geometry handles empty input, a single observation, constant
+values and nonfinite temperatures. A single observation and a flat series are
+centered vertically; invalid temperatures are omitted and an empty valid series
+shows an unavailable state. The loading screen's colour loop is scoped to its
+SwiftUI task and cancelled when the view leaves the hierarchy.
+
+Run the geometry checks without an API key or network access:
+
+```sh
+swiftc MyWeather/ForecastGeometry.swift scripts/test-forecast.swift -o /tmp/test-forecast
+/tmp/test-forecast
+```
+
+CI also builds the iOS Simulator app without signing. These checks do not verify
+live weather responses, device permissions or rendered UI appearance.

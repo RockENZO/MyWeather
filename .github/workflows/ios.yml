@@ -1,0 +1,22 @@
+name: Forecast geometry and iOS build
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  ios:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test forecast geometry
+        run: |
+          swiftc MyWeather/ForecastGeometry.swift scripts/test-forecast.swift -o "$RUNNER_TEMP/test-forecast"
+          "$RUNNER_TEMP/test-forecast"
+      - name: Build iOS app without signing
+        run: >-
+          xcodebuild -project MyWeather.xcodeproj -scheme MyWeather
+          -sdk iphonesimulator -destination 'generic/platform=iOS Simulator'
+          -derivedDataPath "$RUNNER_TEMP/MyWeather-build"
+          CODE_SIGNING_ALLOWED=NO build
