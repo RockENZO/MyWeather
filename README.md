@@ -21,6 +21,7 @@ See [capture metadata](docs/demo-capture/manifest.json) and
 - **iOS 26 Liquid Glass redesign**: translucent, adaptive materials with dynamic opacity on interaction
 - Dark mode support with adaptive text colors
 - Smooth drag‑up card to reveal map details
+- **Recoverable states**: a failed weather request shows a retry action instead of a permanent spinner, and denied location permission explains the problem with a Settings shortcut
 
 ## Requirements
 - iOS 16.0+ (designed for iOS 26 Liquid Glass effects)
